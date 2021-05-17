@@ -7,7 +7,7 @@
 2. Configure/Add remote with 3scale URL and token by using 3scale toolbox command as seen below
 
     ```zsh
-    3scale remote add 3scale-onprem https://$TOKEN@$TENANT_ADMIN_PORTAL_HOSTNAME/
+    3scale remote add apim-demo https://$TOKEN@$TENANT_ADMIN_PORTAL_HOSTNAME/
     ```
 
 3. Create the Secret in openshift project.
@@ -27,24 +27,17 @@
 
     - you can use the image version supported by Red Hat from [Red Hat Containers Catalog](https://catalog.redhat.com/software/containers/3scale-amp2/toolbox-rhel7/5d80bbe95a13461f5f050cf7)
 
-      - Using podman login:
-        ```zsh
-        $ podman login registry.redhat.io
-        Username: {REGISTRY-SERVICE-ACCOUNT-USERNAME}
-        Password: {REGISTRY-SERVICE-ACCOUNT-PASSWORD}
-        Login Succeeded!
-
-        $ podman pull registry.redhat.io/3scale-amp2/toolbox-rhel7
-        ```
-      - Using docker login:
-        ```zsh
-        $ docker login registry.redhat.io
-        Username: {REGISTRY-SERVICE-ACCOUNT-USERNAME}
-        Password: {REGISTRY-SERVICE-ACCOUNT-PASSWORD}
-        Login Succeeded!
-
-        $ docker pull registry.redhat.io/3scale-amp2/toolbox-rhel7
-        ```
+      1. Create a docker-registry secret with the credentials to authenticate on the Red Hat Container registry
+          ```zsh
+          oc create secret docker-registry redhat-registry-auth \
+          --docker-server=registry.redhat.io \
+          --docker-username='REGISTRY-SERVICE-ACCOUNT-USERNAME' \
+          --docker-password='REGISTRY-SERVICE-ACCOUNT-PASSWORD'
+          ```
+      2. Import the 3scale Toolbox image in the DEV OpenShift project:
+          ```zsh
+          oc import-image 3scale-amp2/toolbox-rhel7:3scale2.10 --from=registry.redhat.io/3scale-amp2/toolbox-rhel7:3scale2.10 --confirm
+          ```
     - or you can use image version from [quay.io](https://quay.io/repository/redhat/3scale-toolbox?tag=v0.12.3&tab=tags)
 
         ```
@@ -71,7 +64,7 @@
         skopeo --insecure-policy copy --dest-tls-verify=false --dest-creds="skopeo:$TOKEN" docker:quay.io/redhat/3scale-toolbox:v0.18.2 docker://$REGISTRY/rh-dev/3scale-toolbox:v0.18.2
         ```
 
-6. view [3scale-toolbox Jenkins File](https://github.com/jeannyil-rhoam-resources/rhoam-automation/blob/main/cicd-3scale/3scaletoolbox/Jenkinsfile)
+6. view [3scale-toolbox Jenkins File](./3scaletoolbox/Jenkinsfile)
 
 7. Create pipeline, update the pipeline parameters as per your environment .
 

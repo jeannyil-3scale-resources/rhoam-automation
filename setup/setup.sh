@@ -2,6 +2,8 @@
 
 . ./env.sh 
 
+##### START: Set up DEV Project #####
+
 oc new-project $DEV_PROJECT 2> /dev/null
 while [ $? \> 0 ]; do
     sleep 1
@@ -9,13 +11,20 @@ while [ $? \> 0 ]; do
     oc new-project $DEV_PROJECT 2> /dev/null
 done
 
-# Create the persistent Jenkins server
-oc new-app --template=jenkins-persistent-monitored \
--p VOLUME_CAPACITY=4Gi \
--p MEMORY_LIMIT=2Gi \
--p ENABLE_OAUTH=true
+# /!\ Create the persistent Jenkins instance
 
-echo "import camel-quarkus-jsonvalidation-api CI/CD pipeline"
+# - Using an OpenShift template
+# oc new-app --template=jenkins-persistent \
+# -p VOLUME_CAPACITY=4Gi \
+# -p MEMORY_LIMIT=2Gi \
+# -p ENABLE_OAUTH=true
+
+# - Using the Jenkins Operator
+# /!\ Install the Jenkins Operator in the DEV project
+# Create the Jenkins instance:
+# oc create --save-config -f ./jenkins-persistent_cr.yaml
+
+echo "import camel-quarkus-jsonvalidation-api CI/CD build pipeline"
 oc new-app -f camel-quarkus-jsonvalidation-api/pipeline-app-build.yml \
 -p IMAGE_NAMESPACE=$DEV_PROJECT \
 -p DEV_PROJECT=$DEV_PROJECT \
@@ -25,8 +34,8 @@ oc new-app -f camel-quarkus-jsonvalidation-api/pipeline-app-build.yml \
 # echo "import integration-master-pipeline"
 # TODO
 
-echo "import 3Scale API publishing pipeline"
-oc new-app -f cicd-3scale/3scaletoolbox/pipeline-template.yaml \
+echo "import camel-quarkus-jsonvalidation-api 3Scale API publishing pipeline"
+oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api_pipeline-template.yaml \
 -p IMAGE_NAMESPACE=$DEV_PROJECT \
 -p DEV_PROJECT=$DEV_PROJECT \
 -p TEST_PROJECT=$TEST_PROJECT \
@@ -35,6 +44,10 @@ oc new-app -f cicd-3scale/3scaletoolbox/pipeline-template.yaml \
 -p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox438.opentlc.com \
 -p DEVELOPER_ACCOUNT_ID=developer
 
+##### END: Set up DEV Project #####
+
+##### START: Set up Test Project #####
+
 oc new-project $TEST_PROJECT 2> /dev/null
 while [ $? \> 0 ]; do
     sleep 1
@@ -42,22 +55,20 @@ while [ $? \> 0 ]; do
     oc new-project $TEST_PROJECT 2> /dev/null
 done
 
-
-echo "Setup the surrounding softwate and environment"
-echo
-echo "Start up MySQL for database access"
-
-oc new-app mysql-ephemeral --param=MYSQL_PASSWORD=password --param=MYSQL_USER=dbuser --param=MYSQL_DATABASE=sampledb --param=MYSQL_VERSION=5.7
-
-echo "Start up Broker"
-oc new-app -f projecttemplates/amq-broker-74-basic.yaml --param=AMQ_USER=admin --param=AMQ_PASSWORD=admin
-
-oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
 oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n ${TEST_PROJECT}
 oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:default -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
+# /!\ If Jenkins Instance is installed using the OpenShift template
+# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+# \!\ If Jenkins Instance is installed using the  Jenkins Operator
+oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${TEST_PROJECT}
+
+##### END: Set up Test Project #####
+
 
 #this should be used in development/demo environment for testing purpose
+
+##### START: Set up PROD Project #####
 
 oc new-project $PROD_PROJECT 2> /dev/null
 while [ $? \> 0 ]; do
@@ -66,20 +77,15 @@ while [ $? \> 0 ]; do
     oc new-project $PROD_PROJECT 2> /dev/null
 done
 
-
-echo "Setup the surrounding softwate and environment"
-echo
-echo "Start up MySQL for database access"
-oc project $PROD_PROJECT
-oc new-app mysql-ephemeral --param=MYSQL_PASSWORD=password --param=MYSQL_USER=dbuser --param=MYSQL_DATABASE=sampledb --param=MYSQL_VERSION=5.7
-
-echo "Start up Broker"
-oc new-app -f projecttemplates/amq-broker-74-basic.yaml --param=AMQ_USER=admin --param=AMQ_PASSWORD=admin
-
-
-oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${PROD_PROJECT}
 oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n ${PROD_PROJECT}
 oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:default -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
+# /!\ If Jenkins Instance is installed using the OpenShift template
+# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+# \!\ If Jenkins Instance is installed using the  Jenkins Operator
+oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${PROD_PROJECT}
 
+##### END: Set up PROD Project #####
+
+# Set context to the DEV OpenShift project
 oc project $DEV_PROJECT

@@ -1,18 +1,18 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: pipeline-publish-api-3scale
+  template: pipeline_camel-quarkus-jsonvalidation-api_3scale
 metadata:
   annotations:
     description: 3scale API publishing Pipeline
-  name: publish-api-3scale
+  name: publish_camel-quarkus-jsonvalidation-api_3scale
 objects:
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
-      name: publish-api-3scale
-    name: publish-api-3scale
+      name: publish_camel-quarkus-jsonvalidation-api_3scale
+    name: publish_camel-quarkus-jsonvalidation-api_3scale
   spec:
     output: null
     postCommit: null
@@ -27,7 +27,7 @@ objects:
     strategy:
       type: JenkinsPipeline
       jenkinsPipelineStrategy:
-        jenkinsfilePath: cicd-3scale/3scaletoolbox/Jenkinsfile
+        jenkinsfilePath: cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api_Jenkinsfile
         env:
         - name: GIT_BRANCH
           value: ${GIT_BRANCH}
@@ -61,13 +61,15 @@ objects:
           value: ${DEVELOPER_ACCOUNT_ID}
         - name: DISABLE_TLS_VALIDATION
           value: ${DISABLE_TLS_VALIDATION}
-        - name: PLAN_YAML_FILE_PATH
-          value: ${PLAN_YAML_FILE_PATH}
+        - name: BASIC-PLAN_YAML_FILE_PATH
+          value: ${BASIC-PLAN_YAML_FILE_PATH}
+        - name: PREMIUM-PLAN_YAML_FILE_PATH
+          value: ${PREMIUM-PLAN_YAML_FILE_PATH}
         - name: TOOLBOX_IMAGE_REGISTRY
           value: ${TOOLBOX_IMAGE_REGISTRY}
 parameters:
 - name: GIT_REPO
-  value: https://github.com/rh-integration/IntegrationApp-Automation.git
+  value: https://github.com/jeannyil-rhoam-resources/rhoam-automation.git
   required: true
 - name: GIT_BRANCH
   value: master
@@ -86,7 +88,7 @@ parameters:
   value: 
   #required: true
 - name: API_BASE_SYSTEM_NAME
-  value: 3scalefuse
+  value: camel-quarkus-jsonvalidation-api
   required: true
 - name: DEV_PROJECT
   required: true
@@ -100,16 +102,18 @@ parameters:
   value: 3scale-toolbox
   required: true  
 - name: TARGET_INSTANCE
-  value: instance_a
+  value: apim-demo
   required: true  
 - name: DEVELOPER_ACCOUNT_ID
   required: true
 - name: DISABLE_TLS_VALIDATION
   value: "yes"
-- name: PLAN_YAML_FILE_PATH
-  value: https://raw.githubusercontent.com/rh-integration/IntegrationApp-Automation/master/cicd-3scale/3scaletoolbox/plan.yaml
+- name: BASIC-PLAN_YAML_FILE_PATH
+  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api_basic-plan.yaml
+- name: PREMIUM-PLAN_YAML_FILE_PATH
+  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api_premium-plan.yaml
 - name: TOOLBOX_IMAGE_REGISTRY
-  value: image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox:v0.12.4
+  value: image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10
 
 
 

@@ -1,0 +1,14 @@
+apiVersion: jenkins.io/v1alpha2
+kind: Jenkins
+metadata:
+  name: persistent
+  labels:
+    app: jenkins-persistent
+  namespace: rh-dev
+spec:
+  persistentSpec:
+    enabled: true
+    storageClassName: ocs-storagecluster-ceph-rbd
+    volumeSize: 5Gi
+  metricsEnabled: true
+  backupEnabled: false

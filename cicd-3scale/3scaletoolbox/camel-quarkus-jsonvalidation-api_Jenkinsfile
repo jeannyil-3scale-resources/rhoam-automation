@@ -13,14 +13,12 @@ pipeline {
         }
     }
     parameters{
-        string (defaultValue: 'notinuse', name:'OPENSHIFT_HOST', description:'open shift cluster url')
-        string (defaultValue: 'notinuse', name:'OPENSHIFT_TOKEN', description:'open shift token')
-        string (defaultValue: 'image-registry.openshift-image-registry.svc:5000', name:'IMAGE_REGISTRY', description:'open shift token')
-        string (defaultValue: 'rh-dev', name:'IMAGE_NAMESPACE', description:'name space where image deployed')
+        string (defaultValue: 'image-registry.openshift-image-registry.svc:5000', name:'IMAGE_REGISTRY', description:'container image registry')
+        string (defaultValue: 'rh-dev', name:'IMAGE_NAMESPACE', description:'namespace where image is deployed')
         string (defaultValue: 'rh-dev', name:'DEV_PROJECT', description:'build or development project')
         string (defaultValue: 'rh-test', name:'TEST_PROJECT', description:'Test project')
         string (defaultValue: 'rh-prod', name:'PROD_PROJECT', description:'Production project')
-        string (defaultValue: 'https://github.com/rh-integration/IntegrationApp-Automation.git', name:'GIT_REPO', description:'Git source')
+        string (defaultValue: 'https://github.com/jeannyil-rhoam-resources/rhoam-automation.git', name:'GIT_REPO', description:'Git source')
         string (defaultValue: 'master', name:'GIT_BRANCH', description:'Git branch in the source git')
         booleanParam (defaultValue: false, name:'SELECT_DEPLOY_TO_PROD', description:'Approval to deploy to Production (default: no deployment to production)')
     }
@@ -41,18 +39,16 @@ pipeline {
                 script {
 
                     def envName = params.TEST_PROJECT
-                    def app_name= 'maingateway-service'
-                    def backend_service = sh(script: "oc get route ${app_name} -o jsonpath=\'{.spec.host}\' -n ${envName}", returnStdout: true)
-                    def targetPort = sh(script: "oc get route ${app_name} -o jsonpath=\'{.spec.port.targetPort}\' -n ${envName}", returnStdout: true)
-                    backend_service=  "http://"+backend_service
+                    def app_name= 'camel-quarkus-jsonvalidation-api'
+                    def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
                     service = toolbox.prepareThreescaleService(
-                            openapi: [filename: "cicd-3scale/3scaletoolbox/openapi-spec.json"],
+                            openapi: [filename: "https://raw.githubusercontent.com/jeanNyil/rh-build-quarkus-camel-demos/master/camel-quarkus-jsonvalidation-api/src/main/resources/openapi/openapi.json"],
                             environment: [baseSystemName                : params.API_BASE_SYSTEM_NAME,
                                           privateBaseUrl                : backend_service,
-                                          privateBasePath               : "/cicd",
+                                          privateBasePath               : "/",
                                           environmentName               :  envName,
                                           publicStagingWildcardDomain: params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
                                           publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
@@ -68,7 +64,7 @@ pipeline {
                                     [artefactFile: params.PLAN_YAML_FILE_PATH],
                             ],
                             applications: [
-                                    [name: envName, description: "This is used for test environment ", plan: "plan1", account: params.DEVELOPER_ACCOUNT_ID]
+                                    [name: envName, description: "This is used for test environment ", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
 
                             ]
                     )

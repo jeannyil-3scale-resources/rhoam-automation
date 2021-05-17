@@ -57,6 +57,8 @@ objects:
           value: ${SECRET_NAME}
         - name: TARGET_INSTANCE
           value: ${TARGET_INSTANCE}
+        - name: OIDC_ISSUER_ENDPOINT
+          value: ${OIDC_ISSUER_ENDPOINT}
         - name: DEVELOPER_ACCOUNT_ID
           value: ${DEVELOPER_ACCOUNT_ID}
         - name: DISABLE_TLS_VALIDATION
@@ -103,7 +105,10 @@ parameters:
   required: true  
 - name: TARGET_INSTANCE
   value: apim-demo
-  required: true  
+  required: true
+- name: OIDC_ISSUER_ENDPOINT
+  value: https://apim-demo-zync-component:e81146e6-bbbf-446f-813e-1ed3d9bd4973@sso.apps.jeannyil.sandbox438.opentlc.com/auth/realms/RH3scaleAdminPortal
+  required: true
 - name: DEVELOPER_ACCOUNT_ID
   required: true
 - name: DISABLE_TLS_VALIDATION

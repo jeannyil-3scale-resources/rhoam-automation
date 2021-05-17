@@ -6,7 +6,7 @@ plan:
   trial_period_days: 0
   cancellation_period: 0
   system_name: unlimited_plan
-  approval_required: false
+  approval_required: true
   default: false
 limits: []
 pricingrules: []

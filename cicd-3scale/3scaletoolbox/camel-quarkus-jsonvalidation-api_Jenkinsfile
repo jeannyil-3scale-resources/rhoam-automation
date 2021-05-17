@@ -50,6 +50,7 @@ pipeline {
                                           privateBaseUrl                : backend_service,
                                           privateBasePath               : "/",
                                           environmentName               :  envName,
+                                          oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
                                           publicStagingWildcardDomain: params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
                                           publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
                                         ],
@@ -59,9 +60,8 @@ pipeline {
                                       secretName      : params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [systemName: "plan1", name: "plan1", defaultPlan: true, costPerMonth: 100, setupFee: 10, trialPeriodDays: 5],
-                                    [systemName: "silver", name: "Silver", costPerMonth: 100, setupFee: 10, trialPeriodDays: 5],
-                                    [artefactFile: params.PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.BASIC-PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.PREMIUM-PLAN_YAML_FILE_PATH],
                             ],
                             applications: [
                                     [name: envName, description: "This is used for test environment ", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
@@ -89,14 +89,13 @@ pipeline {
                     retry(5) {
 
                         sh """set -e -x
-                          curl -k -f -w "UserAlert: %{http_code}\n" -o /dev/null -s ${
+                          curl -k -f -w "Health: %{http_code}\n" -o /dev/null -s ${
                             sandbox_endpoint
-                        }/cicd/maingateway/profile/11111?alertType=ACCIDENT"&api-key=${service.applications[0].userkey}"
+                        }/health"&api-key=${service.applications[0].userkey}"
                         """
                     }
                     echo "Promote to production"
                     service.promoteToProduction()
-
 
                 }
             }
@@ -134,10 +133,8 @@ pipeline {
                 script {
 
                     def envName = params.PROD_PROJECT
-                    def app_name= 'maingateway-service'
-                    def backend_service = sh(script: "oc get route ${app_name} -o jsonpath=\'{.spec.host}\' -n ${envName}", returnStdout: true)
-                    def targetPort = sh(script: "oc get route ${app_name} -o jsonpath=\'{.spec.port.targetPort}\' -n ${envName}", returnStdout: true)
-                    backend_service=  "http://"+backend_service
+                    def app_name= 'camel-quarkus-jsonvalidation-api'
+                    def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
@@ -145,8 +142,9 @@ pipeline {
                             openapi: [filename: "cicd-3scale/3scaletoolbox/openapi-spec.json"],
                             environment: [baseSystemName                : params.API_BASE_SYSTEM_NAME,
                                           privateBaseUrl                : backend_service,
-                                          privateBasePath               : "/cicd",
+                                          privateBasePath               : "/",
                                           environmentName               : envName,
+                                          oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
                                           publicStagingWildcardDomain: params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
                                           publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
                                         ],
@@ -156,12 +154,11 @@ pipeline {
                                       secretName      : params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [systemName: "plan1", name: "plan1", defaultPlan: true, costPerMonth: 100, setupFee: 10, trialPeriodDays: 5],
-                                    [systemName: "silver", name: "Silver", costPerMonth: 100, setupFee: 10, trialPeriodDays: 5],
-                                    [artefactFile: params.PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.BASIC-PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.PREMIUM-PLAN_YAML_FILE_PATH],
                             ],
                             applications: [
-                                    [name:envName, description: "This is used for production", plan: "plan1", account: params.DEVELOPER_ACCOUNT_ID]
+                                    [name:envName, description: "This is used for production", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
 
                             ]
                     )
@@ -184,14 +181,13 @@ pipeline {
                     def sandbox_endpoint = proxy.sandbox_endpoint
                     retry(5) {
                         sh """set -e -x
-                          curl -k -f -w "UserAlert: %{http_code}\n" -o /dev/null -s ${
+                          curl -k -f -w "Health: %{http_code}\n" -o /dev/null --s ${
                             sandbox_endpoint
-                        }/cicd/maingateway/profile/11111?alertType=ACCIDENT"&api-key=${service.applications[0].userkey}"
+                        }/health"&api-key=${service.applications[0].userkey}"
                         """
                     }
                     echo "Promote to production"
                     service.promoteToProduction()
-
 
                 }
             }

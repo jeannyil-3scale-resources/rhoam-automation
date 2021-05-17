@@ -5,7 +5,7 @@ labels:
 metadata:
   annotations:
     description: Camel-Quarkus-JsonValidation-Api CICD Deployment Pipeline
-  name: pipeline
+  name: camel-quarkus-jsonvalidation-api-pipeline
 parameters:
 - name: GIT_REPO
   value: https://github.com/jeanNyil/rh-build-quarkus-camel-demos.git

@@ -1,18 +1,18 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: pipeline_camel-quarkus-jsonvalidation-api_3scale
+  template: pipeline-camel-quarkus-jsonvalidation-api-3scale
 metadata:
   annotations:
     description: 3scale API publishing Pipeline
-  name: publish_camel-quarkus-jsonvalidation-api_3scale
+  name: publish-camel-quarkus-jsonvalidation-api-3scale
 objects:
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
-      name: publish_camel-quarkus-jsonvalidation-api_3scale
-    name: publish_camel-quarkus-jsonvalidation-api_3scale
+      name: publish-camel-quarkus-jsonvalidation-api-3scale
+    name: publish-camel-quarkus-jsonvalidation-api-3scale
   spec:
     output: null
     postCommit: null
@@ -63,10 +63,10 @@ objects:
           value: ${DEVELOPER_ACCOUNT_ID}
         - name: DISABLE_TLS_VALIDATION
           value: ${DISABLE_TLS_VALIDATION}
-        - name: BASIC-PLAN_YAML_FILE_PATH
-          value: ${BASIC-PLAN_YAML_FILE_PATH}
-        - name: PREMIUM-PLAN_YAML_FILE_PATH
-          value: ${PREMIUM-PLAN_YAML_FILE_PATH}
+        - name: BASIC_PLAN_YAML_FILE_PATH
+          value: ${BASIC_PLAN_YAML_FILE_PATH}
+        - name: UNLIMITED_PLAN_YAML_FILE_PATH
+          value: ${UNLIMITED_PLAN_YAML_FILE_PATH}
         - name: TOOLBOX_IMAGE_REGISTRY
           value: ${TOOLBOX_IMAGE_REGISTRY}
 parameters:
@@ -113,10 +113,10 @@ parameters:
   required: true
 - name: DISABLE_TLS_VALIDATION
   value: "yes"
-- name: BASIC-PLAN_YAML_FILE_PATH
-  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api_basic-plan.yaml
-- name: PREMIUM-PLAN_YAML_FILE_PATH
-  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api_premium-plan.yaml
+- name: BASIC_PLAN_YAML_FILE_PATH
+  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml
+- name: UNLIMITED_PLAN_YAML_FILE_PATH
+  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml
 - name: TOOLBOX_IMAGE_REGISTRY
   value: image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10
 

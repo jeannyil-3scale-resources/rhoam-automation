@@ -60,8 +60,8 @@ pipeline {
                                       secretName      : params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [artefactFile: params.BASIC-PLAN_YAML_FILE_PATH],
-                                    [artefactFile: params.PREMIUM-PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH],
                             ],
                             applications: [
                                     [name: envName, description: "This is used for test environment ", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
@@ -154,8 +154,8 @@ pipeline {
                                       secretName      : params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [artefactFile: params.BASIC-PLAN_YAML_FILE_PATH],
-                                    [artefactFile: params.PREMIUM-PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH],
                             ],
                             applications: [
                                     [name:envName, description: "This is used for production", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]

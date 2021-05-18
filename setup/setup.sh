@@ -22,10 +22,10 @@ done
 # - Using the Jenkins Operator
 # /!\ Install the Jenkins Operator in the DEV project
 # Create the Jenkins instance:
-# oc create --save-config -f ./jenkins-persistent_cr.yaml
+oc create --save-config -f setup/jenkins-persistent_cr.yaml
 
 echo "import camel-quarkus-jsonvalidation-api CI/CD build pipeline"
-oc new-app -f ./cicd-api-build/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_build-deploy-pipeline.yml \
+oc new-app -f cicd-api-build/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_build-deploy-pipeline.yml \
 -p IMAGE_NAMESPACE=$DEV_PROJECT \
 -p DEV_PROJECT=$DEV_PROJECT \
 -p TEST_PROJECT=$TEST_PROJECT \
@@ -42,7 +42,12 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-q
 -p PROD_PROJECT=$PROD_PROJECT \
 -p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox438.opentlc.com \
 -p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox438.opentlc.com \
--p DEVELOPER_ACCOUNT_ID=developer
+-p OIDC_ISSUER_ENDPOINT="https://apim-demo-zync-component:e81146e6-bbbf-446f-813e-1ed3d9bd4973@sso.apps.jeannyil.sandbox438.opentlc.com/auth/realms/RH3scaleAdminPortal" \
+-p DEVELOPER_ACCOUNT_ID=developer \
+-p BASIC_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml" \
+-p UNLIMITED_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml" \
+-p DISABLE_TLS_VALIDATION="no" \
+-p TOOLBOX_IMAGE_REGISTRY="image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10"
 
 ##### END: Set up DEV Project #####
 
@@ -82,7 +87,7 @@ oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJ
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template
 # oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
-# \!\ If Jenkins Instance is installed using the  Jenkins Operator
+# /!\ If Jenkins Instance is installed using the  Jenkins Operator
 oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${PROD_PROJECT}
 
 ##### END: Set up PROD Project #####

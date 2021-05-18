@@ -25,7 +25,7 @@ done
 # oc create --save-config -f ./jenkins-persistent_cr.yaml
 
 echo "import camel-quarkus-jsonvalidation-api CI/CD build pipeline"
-oc new-app -f camel-quarkus-jsonvalidation-api/pipeline-app-build.yml \
+oc new-app -f ./cicd-api-build/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_build-deploy-pipeline.yml \
 -p IMAGE_NAMESPACE=$DEV_PROJECT \
 -p DEV_PROJECT=$DEV_PROJECT \
 -p TEST_PROJECT=$TEST_PROJECT \
@@ -35,7 +35,7 @@ oc new-app -f camel-quarkus-jsonvalidation-api/pipeline-app-build.yml \
 # TODO
 
 echo "import camel-quarkus-jsonvalidation-api 3Scale API publishing pipeline"
-oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api_pipeline-template.yaml \
+oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_pipeline-template.yaml \
 -p IMAGE_NAMESPACE=$DEV_PROJECT \
 -p DEV_PROJECT=$DEV_PROJECT \
 -p TEST_PROJECT=$TEST_PROJECT \

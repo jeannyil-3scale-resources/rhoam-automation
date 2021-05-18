@@ -7,7 +7,7 @@
 2. Configure/Add remote with 3scale URL and token by using 3scale toolbox command as seen below
 
     ```zsh
-    3scale remote add apim-demo https://$TOKEN@$TENANT_ADMIN_PORTAL_HOSTNAME/
+    3scale remote add 3scale-tenant https://$TOKEN@$TENANT_ADMIN_PORTAL_HOSTNAME/
     ```
 
 3. Create the Secret in openshift project.
@@ -64,12 +64,12 @@
         skopeo --insecure-policy copy --dest-tls-verify=false --dest-creds="skopeo:$TOKEN" docker:quay.io/redhat/3scale-toolbox:v0.18.2 docker://$REGISTRY/rh-dev/3scale-toolbox:v0.18.2
         ```
 
-6. view [3scale-toolbox Jenkinsfile for camel-quarkus-jsonvalidation-api](./3scaletoolbox/camel-quarkus-jsonvalidation-api_Jenkinsfile)
+6. view [3scale-toolbox Jenkinsfile for camel-quarkus-jsonvalidation-api](./3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_Jenkinsfile)
 
 7. Create pipeline, update the pipeline parameters as per your environment .
 
     ```zsh
-    oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api_pipeline-template.yaml  \
+    oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_pipeline-template.yaml  \
     -p IMAGE_NAMESPACE=rh-dev \
     -p DEV_PROJECT=rh-dev \
     -p TEST_PROJECT=rh-test \

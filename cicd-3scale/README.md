@@ -15,7 +15,8 @@
     ```zsh
     oc project rh-dev
 
-    oc create secret generic 3scale-toolbox --from-file=$HOME/.3scalerc.yaml
+    oc create secret generic 3scale-toolbox \
+    --from-file=$HOME/.3scalerc.yaml
     ```
 
 4. Read the following:
@@ -25,7 +26,7 @@
 
 5. Download the 3scaletoolbox image and push it your OpenShift registry:
 
-    - you can use the image version supported by Red Hat from [Red Hat Containers Catalog](https://catalog.redhat.com/software/containers/3scale-amp2/toolbox-rhel7/5d80bbe95a13461f5f050cf7)
+    - **RECOMMENDED** - you can use the image version supported by Red Hat from [Red Hat Containers Catalog](https://catalog.redhat.com/software/containers/3scale-amp2/toolbox-rhel7/5d80bbe95a13461f5f050cf7)
 
       1. Create a docker-registry secret with the credentials to authenticate on the Red Hat Container registry
           ```zsh
@@ -36,9 +37,11 @@
           ```
       2. Import the 3scale Toolbox image in the DEV OpenShift project:
           ```zsh
-          oc import-image 3scale-amp2/toolbox-rhel7:3scale2.10 --from=registry.redhat.io/3scale-amp2/toolbox-rhel7:3scale2.10 --confirm
+          oc import-image 3scale-amp2/toolbox-rhel7:3scale2.10 \
+          --from=registry.redhat.io/3scale-amp2/toolbox-rhel7:3scale2.10 \
+          --confirm
           ```
-    - or you can use image version from [quay.io](https://quay.io/repository/redhat/3scale-toolbox?tag=v0.12.3&tab=tags)
+    - **OR** - you can use image version from [quay.io](https://quay.io/repository/redhat/3scale-toolbox?tag=v0.12.3&tab=tags)
 
         ```
         brew install skopeo

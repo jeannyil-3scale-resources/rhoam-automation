@@ -21,6 +21,8 @@ done
 
 # - Using the Jenkins Operator
 # /!\ Install the Jenkins Operator in the DEV project
+oc create --save-config -f setup/jenkins-operator_install.yaml
+
 # Create the Jenkins instance:
 oc create --save-config -f setup/jenkins-persistent_cr.yaml
 
@@ -36,6 +38,8 @@ oc new-app -f cicd-api-build/camel-quarkus-jsonvalidation-api/camel-quarkus-json
 
 echo "import camel-quarkus-jsonvalidation-api 3Scale API publishing pipeline"
 oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_pipeline-template.yaml \
+-p GIT_REPO="https://github.com/jeannyil-rhoam-resources/rhoam-automation.git" \
+-p GIT_BRANCH="main" \
 -p IMAGE_NAMESPACE=$DEV_PROJECT \
 -p DEV_PROJECT=$DEV_PROJECT \
 -p TEST_PROJECT=$TEST_PROJECT \

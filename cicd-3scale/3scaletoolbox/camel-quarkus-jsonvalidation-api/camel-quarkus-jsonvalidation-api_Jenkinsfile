@@ -6,7 +6,13 @@ library identifier: '3scale-toolbox-jenkins@master',
 
 def service = null
 
-node("maven") {
+pipeline {
+    agent {
+        node {
+            label 'master'
+        }
+    }
+
     parameters{
         string (defaultValue: 'image-registry.openshift-image-registry.svc:5000', name:'IMAGE_REGISTRY', description:'container image registry')
         string (defaultValue: 'rh-dev', name:'IMAGE_NAMESPACE', description:'namespace where image is deployed')
@@ -17,13 +23,15 @@ node("maven") {
         string (defaultValue: 'master', name:'GIT_BRANCH', description:'Git branch in the source git')
         booleanParam (defaultValue: false, name:'SELECT_DEPLOY_TO_PROD', description:'Approval to deploy to Production (default: no deployment to production)')
     }
-    stages {
 
+    stages {
+    
         stage('Checkout Source') {
             steps {
                 checkout scm
             }
         }
+
         stage('3scale Publish API to Test') {
             when {
                 expression {
@@ -46,7 +54,7 @@ node("maven") {
                                           privateBasePath               : "/",
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          publicStagingWildcardDomain: params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
+                                          publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
                                           publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
                                         ],
                             toolbox: [openshiftProject: params.DEV_PROJECT, 
@@ -109,7 +117,6 @@ node("maven") {
             }
         }
 
-
         stage('3scale Publish API to Production') {
             when {
                 expression {
@@ -132,7 +139,7 @@ node("maven") {
                                           privateBasePath               : "/",
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          publicStagingWildcardDomain: params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
+                                          publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
                                           publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
                                         ],
                             toolbox: [openshiftProject: params.DEV_PROJECT, 

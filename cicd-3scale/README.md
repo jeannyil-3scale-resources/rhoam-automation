@@ -41,30 +41,12 @@
           --from=registry.redhat.io/3scale-amp2/toolbox-rhel7:3scale2.10 \
           --confirm
           ```
-    - **OR** - you can use image version from [quay.io](https://quay.io/repository/redhat/3scale-toolbox?tag=v0.12.3&tab=tags)
+    - **OR** - you can use image version from [quay.io](https://quay.io/repository/redhat/3scale-toolbox?tag=v0.18.2&tab=tags)
 
-        ```
-        brew install skopeo
-        yum install skopeo
-            
-        oc project rh-dev
-            
-        REGISTRY="$(oc get route docker-registry -n default -o 'jsonpath={.spec.host}')"  
-        ```
-        
-        if your using openshfift 4+ version then use registry     
-          
-        ```
-        REGISTRY="$(oc get route default-route -n openshift-image-registry -o 'jsonpath={.spec.host}')" 
-        ```  
-        ```
-        oc create serviceaccount skopeo
-        oc get secrets -o jsonpath='{range .items[?(@.metadata.annotations.kubernetes\.io/service-account\.name=="skopeo")]}{.metadata.annotations.openshift\.io/token-secret\.value}{end}' |tee skopeo-token
-        TOKEN="$(cat skopeo-token)"
-            
-        oc adm policy add-role-to-user system:image-builder -n rh-dev system:serviceaccount:rh-dev:skopeo
-            
-        skopeo --insecure-policy copy --dest-tls-verify=false --dest-creds="skopeo:$TOKEN" docker://quay.io/redhat/3scale-toolbox:v0.18.2 docker://$REGISTRY/rh-dev/3scale-toolbox:v0.18.2
+        ```zsh
+          oc import-image redhat/3scale-toolbox:v0.18.2 \
+          --from=quay.io/redhat/3scale-toolbox:v0.18.2 \
+          --confirm
         ```
 
 6. view [3scale-toolbox Jenkinsfile for camel-quarkus-jsonvalidation-api](./3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_Jenkinsfile)

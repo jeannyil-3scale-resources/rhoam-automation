@@ -40,11 +40,11 @@ node() {
         checkout scm
     }
 
-    stage("Fetch OpenAPI and Application Plan artefacts") {
+    stage("Fetch OpenAPI and Application Plan artifacts") {
         // Fetch the OpenAPI Specification file and provision it as a ConfigMap
         sh """
-        oc delete configmap artefacts --ignore-not-found
-        oc create configmap artefacts \
+        oc delete configmap artifacts --ignore-not-found
+        oc create configmap artifacts \
         --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_rhoam-oas3.yaml" \
         --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml" \
         --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml"

@@ -37,9 +37,7 @@ def publicProductionBaseURL = "https://camel-quarkus-jsonvalidation-api.apps.jea
 node() {
 
     stage('Checkout Source') {
-        steps {
-            checkout scm
-        }
+        checkout scm
     }
 
     stage("Fetch OpenAPI and Application Plan artefacts") {

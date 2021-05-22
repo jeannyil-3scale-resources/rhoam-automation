@@ -1,0 +1,211 @@
+#!groovy
+
+/*
+ * This pipeline will provision the Beer Catalog API found on the microcks/api-lifecycle
+ * repository (secured using API Key) on a 3scale Hosted instance. 
+ * 
+ * Setup instructions:
+ * 1. Spin up a Jenkins master in a fresh OpenShift project
+ * 2. Create a secret containing your 3scale_toolbox remotes:
+ *
+ *    3scale remote add 3scale-saas "https://123...456@MY-TENANT-admin.3scale.net/"
+ *    oc create secret generic 3scale-toolbox --from-file="$HOME/.3scalerc.yaml"
+ *
+ * 3. If you chosed a different remote name, please adjust the targetInstance variable
+ *    accordingly.
+ * 4. Create a new Jenkins pipeline using the content of this file.
+ */
+
+// Target service system name
+def targetSystemName = "camel_quarkus_jsonvalidation_apip_v1"
+// Remote RHOAM/3scale API Management instance
+def targetInstance = "apim-demo"
+// API backend URL
+def privateBaseURL = "http://camel-quarkus-jsonvalidation-api.rh-dev.svc:8080"
+// oidcIssuerEndpoint
+def oidcIssuerEndpoint = "https://apim-demo-zync-component:e81146e6-bbbf-446f-813e-1ed3d9bd4973@sso.apps.jeannyil.sandbox438.opentlc.com/auth/realms/RH3scaleAdminPortal"
+// Client ID (OpenID Connect protocol)
+def clientId = "azerty1234567890"
+// Client Secret (OpenID Connect protocol)
+def clientSecret = "5b4d049d-3a96-407a-a1dd-c7d631e40e48"
+// Developer Account Id
+def developerAccountId = "developer"
+
+def publicStagingBaseURL = "https://camel-quarkus-jsonvalidation-api-staging.apps.jeannyil.sandbox438.opentlc.com"
+def publicProductionBaseURL = "https://camel-quarkus-jsonvalidation-api.apps.jeannyil.sandbox438.opentlc.com" 
+
+node() {
+
+    stage('Checkout Source') {
+        steps {
+            checkout scm
+        }
+    }
+
+    stage("Fetch OpenAPI and Application Plan artefacts") {
+        // Fetch the OpenAPI Specification file and provision it as a ConfigMap
+        sh """
+        oc delete configmap artefacts --ignore-not-found
+        oc create configmap artefacts \
+        --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_rhoam-oas3.yaml" \
+        --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml" \
+        --from-file="unlimitedplan="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml"
+        """
+    }
+
+    stage("Import OpenAPI") {
+        def tooboxArgs = [ "3scale", "import", "openapi", "-d", targetInstance, "/artifacts/camel-quarkus-jsonvalidation-api_rhoam-oas3.yaml", "--override-private-base-url=${privateBaseURL}", "-t", targetSystemName ]
+        if (publicStagingBaseURL != null) {
+            tooboxArgs += "--staging-public-base-url=${publicStagingBaseURL}"
+        }
+        if (publicProductionBaseURL != null) {
+            tooboxArgs += "--production-public-base-url=${publicProductionBaseURL}"
+        }
+        runToolbox(tooboxArgs)
+    }
+    
+    stage("Create Application Plans") {
+        runToolbox([ "3scale", "application-plan", "import", targetInstance, targetSystemName, "test", "-n", "Test Plan", "--default" ])
+    }
+
+    stage("Create an Application") {
+        runToolbox([ "3scale", "application", "apply", targetInstance, "--application-id=${clientId}", "--application-key=${clientSecret}", "--account=${developerAccountId}", "--name=Test Application", "--description=Created by Jenkins", "--plan=basic_plan", "--service=${targetSystemName}" ])
+    }
+
+    stage("Run integration tests") {
+        // TODO
+    }
+    
+    stage("Promote to production") {
+        runToolbox([ "3scale", "proxy", "promote", targetInstance, targetSystemName ])
+    }
+
+}
+
+/*
+* This function runs the 3scale toolbox as a Kubernetes Job.
+*/
+def runToolbox(args) {
+    // You can adjust the Job Template to your needs
+    def kubernetesJob = [
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": [
+        "name": "toolbox"
+        ],
+        "spec": [
+        // When the pipeline development is finished, you can increase the backoffLimit to 2
+        "backoffLimit": 2, // three attempts (one first try + two retries)
+        // Adjust the activeDeadlineSeconds according to your server velocity
+        "activeDeadlineSeconds": 300,
+        "template": [
+            "spec": [
+            "restartPolicy": "Never",
+            "containers": [
+                [
+                "name": "job",
+                // Do not forget to change the image tag to something more stable than "master"!
+                "image": "image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10",
+                "imagePullPolicy": "Always",
+                "args": [ "3scale", "version" ],
+                "env": [
+                    // This is needed for the 3scale_toolbox to read its configuration file
+                    // mounted from the toolbox-config secret 
+                    [ "name": "HOME", "value": "/config" ]
+                ],
+                "volumeMounts": [
+                    [ "mountPath": "/config", "name": "toolbox-config" ],
+                    [ "mountPath": "/artifacts", "name": "artifacts" ]
+                ]
+                ]
+            ],
+            "volumes": [
+                // This Secret contains the .3scalerc.yaml toolbox configuration file
+                [ "name": "toolbox-config", "secret": [ "secretName": "3scale-toolbox" ] ],
+                // This ConfigMap contains the artifacts to deploy (OpenAPI Specification file, Application Plan file, etc.)
+                [ "name": "artifacts", "configMap": [ "name": "openapi" ] ]
+            ]
+            ]
+        ]
+        ]
+    ]
+    
+    // Patch the Kubernetes job template to add the provided 3scale_toolbox arguments
+    kubernetesJob.spec.template.spec.containers[0].args = args
+
+    // Write the Kubernetes Job definition to a YAML file
+    sh "rm -f -- job.yaml"
+    writeYaml file: "job.yaml", data: kubernetesJob
+
+    // Do some cleanup, create the job and wait a little bit...
+    sh """
+    oc delete job toolbox --ignore-not-found
+    sleep 2
+    oc create -f job.yaml
+    sleep 20 # Adjust the sleep duration to your server velocity
+    """
+    
+    // ...before collecting logs!
+    def logs = sh(script: "oc logs -f job/toolbox", returnStdout: true)
+    
+    // When using "returnStdout: true", Jenkins does not display stdout logs anymore.
+    // So, we have to display them by ourselves!
+    echo logs
+
+    // The stdout logs may contains parseable output, so we return them to the caller
+    // that will use them as desired.
+    return logs
+}
+
+/*
+ * This function runs the integration tests on a 3scale service (API Product).
+ */
+def runIntegrationTests() {
+    /*
+    * When using 3scale Hosted with hosted APIcast instance, we need to extract the proxy definition
+    * to read the Public Staging Base URL. Otherwise, we can just re-use the publicStagingBaseURL
+    * variable defined above.
+    */
+    if (publicStagingBaseURL == null) {
+        def proxyDefinition = runToolbox([ "3scale", "proxy", "show", targetInstance, targetSystemName, "sandbox" ])
+        def proxy = readJSON text: proxyDefinition
+        publicStagingBaseURL = proxy.content.proxy.sandbox_endpoint
+    }
+
+    // The integration tests will be a bit different depending on the security scheme
+    // declared in the OpenAPI Specification file
+    def getCredentialsCodeSnippet = null
+    def tokenEndpoint = getTokenEndpoint(params.OIDC_ISSUER_ENDPOINT)
+    getCredentialsCodeSnippet = """
+    echo "token endpoint is ${tokenEndpoint}"
+    echo "client_id=${clientId}"
+    echo "client_secret=${clientSecret}"
+    curl -sfk "${tokenEndpoint}" -d client_id="${clientId}" -d client_secret="${clientSecret}" -d scope=openid -d grant_type=client_credentials -o response.json
+    curl -sLfk https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /tmp/jq
+    chmod 755 /tmp/jq
+    TOKEN="\$(/tmp/jq -r .access_token response.json)"
+    echo "Received access_token '\$TOKEN'"
+    credential_header="Authorization: Bearer \$TOKEN"
+    """
+
+    // Run the actual tests
+    def postdata = "{\"requestType\": \"API\", \"requestID\": 5948, \"memberID\": 85623617, \"status\": \"A\", \"enrolmentDate\": \"2019-06-16\", \"changedBy\": \"jeanNyil\", \"forcedLevelCode\": \"69\", \"vipOnInvitation\": \"Y\", \"startDate\": \"2019-06-16\", \"endDate\": \"2100-06-16\"}"
+    retry(5) {
+        sh """set -e
+        echo "Public Staging Base URL is ${publicStagingBaseURL}"
+        ${getCredentialsCodeSnippet}
+        curl -sfk -w "Health: %{http_code}\n" -o /dev/null "${publicStagingBaseURL}/health" -H "\$credential_header"
+        curl -sfk -w "Metrics: %{http_code}\n" -o /dev/null "${publicStagingBaseURL}/metrics" -H "\$credential_header"
+        url -sfk -X POST -w "POST validateMembershipJSON: %{http_code}\n" -o /dev/null "${publicStagingBaseURL}/validateMembershipJSON" -H "\$credential_header"
+        """
+    }
+
+}
+
+/*
+ * This function returns the Red Hat SSO token endpoint for a given REALM URL.
+ */
+def getTokenEndpoint(String oidcIssuerEndpoint) {
+    def m = (oidcIssuerEndpoint =~ /(https?:\/\/)[^:]+:[^@]+@(.*)/)
+    return "${m[0][1]}${m[0][2]}/protocol/openid-connect/token"
+}

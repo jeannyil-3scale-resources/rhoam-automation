@@ -47,7 +47,7 @@ node() {
         oc create configmap artefacts \
         --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_rhoam-oas3.yaml" \
         --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml" \
-        --from-file="unlimitedplan="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml"
+        --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml"
         """
     }
 

@@ -62,11 +62,11 @@ pipeline {
                                       image: params.TOOLBOX_IMAGE_REGISTRY,
                                       activeDeadlineSeconds: 300,
                                       insecure: params.DISABLE_TLS_VALIDATION == "yes",
-                                      secretName: params.SECRET_NAME],
+                                      secretName: params.SECRET_NAME]
                             service: [:],
                             applicationPlans: [
                                     [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
-                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
                             ],
                             applications: [
                                     [name: envName, description: "This is used for test environment ", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]

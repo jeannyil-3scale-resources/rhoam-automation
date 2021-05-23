@@ -43,8 +43,8 @@ node() {
     stage("Fetch OpenAPI and Application Plan artifacts") {
         // Fetch the OpenAPI Specification file and provision it as a ConfigMap
         sh """
-        oc delete configmap artifacts --ignore-not-found
-        oc create configmap artifacts \
+        oc delete configmap service-artifacts --ignore-not-found
+        oc create configmap service-artifacts \
         --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_rhoam-oas3.yaml" \
         --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml" \
         --from-file="./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml"
@@ -92,8 +92,9 @@ def runToolbox(args) {
         "name": "toolbox"
         ],
         "spec": [
-        // When the pipeline development is finished, you can increase the backoffLimit to 2
+        // Number of retries before marking this job failed. Defaults to 6
         "backoffLimit": 2, // three attempts (one first try + two retries)
+        // Specifies the duration in seconds relative to the startTime that the job may be active before the system tries to terminate it.
         // Adjust the activeDeadlineSeconds according to your server velocity
         "activeDeadlineSeconds": 300,
         "template": [
@@ -102,7 +103,6 @@ def runToolbox(args) {
             "containers": [
                 [
                 "name": "job",
-                // Do not forget to change the image tag to something more stable than "master"!
                 "image": "image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10",
                 "imagePullPolicy": "Always",
                 "args": [ "3scale", "version" ],
@@ -120,8 +120,8 @@ def runToolbox(args) {
             "volumes": [
                 // This Secret contains the .3scalerc.yaml toolbox configuration file
                 [ "name": "toolbox-config", "secret": [ "secretName": "3scale-toolbox" ] ],
-                // This ConfigMap contains the artifacts to deploy (OpenAPI Specification file, Application Plan file, etc.)
-                [ "name": "artifacts", "configMap": [ "name": "artifacts" ] ]
+                // This ConfigMap contains the artifacts to deploy (OpenAPI Specification file, Application Plan files, etc.)
+                [ "name": "artifacts", "configMap": [ "name": "service-artifacts" ] ]
             ]
             ]
         ]

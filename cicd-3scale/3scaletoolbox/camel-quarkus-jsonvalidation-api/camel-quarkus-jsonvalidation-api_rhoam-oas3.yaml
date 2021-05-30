@@ -10,7 +10,7 @@ info:
     name: MIT License
     url: https://opensource.org/licenses/MIT
 servers:
-- url: http://sample-json-validation-api.apps.jeannyil.sandbox438.opentlc.com
+- url: http://sample-json-validation-api.apps.jeannyil.sandbox235.opentlc.com
   description: API Backend URL
 paths:
   /validateMembershipJSON:
@@ -171,13 +171,13 @@ components:
     oauth2:
       flows:
         clientCredentials:
-          tokenUrl: https://sso.apps.jeannyil.sandbox438.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/token
+          tokenUrl: https://sso.apps.jeannyil.sandbox235.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/token
           scopes:
             openid: OpenID Connect Protocol
         authorizationCode:
-          authorizationUrl: https://sso.apps.jeannyil.sandbox438.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/auth
-          tokenUrl: https://sso.apps.jeannyil.sandbox438.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/token
-          refreshUrl: https://sso.apps.jeannyil.sandbox438.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/token
+          authorizationUrl: https://sso.apps.jeannyil.sandbox235.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/auth
+          tokenUrl: https://sso.apps.jeannyil.sandbox235.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/token
+          refreshUrl: https://sso.apps.jeannyil.sandbox235.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/token
           scopes:
             openid: OpenID Connect protocol
       type: oauth2

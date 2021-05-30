@@ -23,7 +23,7 @@ def targetInstance = "apim-demo"
 // API backend URL
 def privateBaseURL = "http://camel-quarkus-jsonvalidation-api.rh-dev.svc:8080"
 // oidcIssuerEndpoint
-def oidcIssuerEndpoint = "https://apim-demo-zync-component:e81146e6-bbbf-446f-813e-1ed3d9bd4973@sso.apps.jeannyil.sandbox438.opentlc.com/auth/realms/RH3scaleAdminPortal"
+def oidcIssuerEndpoint = "https://apim-demo-zync-component:e81146e6-bbbf-446f-813e-1ed3d9bd4973@sso.apps.jeannyil.sandbox235.opentlc.com/auth/realms/RH3scaleAdminPortal"
 // Client ID (OpenID Connect protocol)
 def clientId = "azerty1234567890"
 // Client Secret (OpenID Connect protocol)
@@ -31,8 +31,8 @@ def clientSecret = "5b4d049d-3a96-407a-a1dd-c7d631e40e48"
 // Developer Account Id
 def developerAccountId = "developer"
 
-def publicStagingBaseURL = "https://camel-quarkus-jsonvalidation-api-staging.apps.jeannyil.sandbox438.opentlc.com"
-def publicProductionBaseURL = "https://camel-quarkus-jsonvalidation-api.apps.jeannyil.sandbox438.opentlc.com" 
+def publicStagingBaseURL = "https://camel-quarkus-jsonvalidation-api-staging.apps.jeannyil.sandbox235.opentlc.com"
+def publicProductionBaseURL = "https://camel-quarkus-jsonvalidation-api.apps.jeannyil.sandbox235.opentlc.com" 
 
 node() {
 

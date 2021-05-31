@@ -21,7 +21,7 @@ done
 
 # - Using the Jenkins Operator
 # /!\ Install the Jenkins Operator in the DEV project
-oc create --save-config -f setup/jenkins-operator_install.yaml
+# TODO
 
 # Create the Jenkins instance:
 oc create --save-config -f setup/jenkins-persistent_cr.yaml

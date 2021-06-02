@@ -9,7 +9,7 @@ def service = null
 pipeline {
     agent {
         node {
-            label 'master'
+            label 'maven'
         }
     }
 

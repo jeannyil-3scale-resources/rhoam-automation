@@ -26,6 +26,11 @@ done
 # Create the Jenkins instance:
 oc create --save-config -f setup/jenkins-persistent_cr.yaml
 
+# /!\ If Jenkins Instance is installed using the OpenShift template
+# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${DEV_PROJECT}
+# /!\ If Jenkins Instance is installed using the  Jenkins Operator
+#oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${DEV_PROJECT}
+
 echo "import camel-quarkus-jsonvalidation-api CI/CD build pipeline"
 oc new-app -f cicd-api-build/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_build-deploy-pipeline.yml \
 -p IMAGE_NAMESPACE=$DEV_PROJECT \
@@ -90,7 +95,7 @@ oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n 
 oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:default -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template
-# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${PROD_PROJECT}
 # /!\ If Jenkins Instance is installed using the  Jenkins Operator
 oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${PROD_PROJECT}
 

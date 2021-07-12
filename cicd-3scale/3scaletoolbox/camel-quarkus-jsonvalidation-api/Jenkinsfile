@@ -1,8 +1,8 @@
 #!groovy
 
 /*
- * This pipeline will provision the Beer Catalog API found on the microcks/api-lifecycle
- * repository (secured using API Key) on a 3scale Hosted instance. 
+ * This pipeline will provision the Camel Quarkus JSON Validation API Product (./camel-quarkus-jsonvalidation-api_rhoam-oas3.yaml)
+ * (secured using OIDC) on a 3scale API Management instance. 
  * 
  * Setup instructions:
  * 1. Spin up a Jenkins master in a fresh OpenShift project
@@ -23,7 +23,7 @@ def targetInstance = "apim-demo"
 // API backend URL
 def privateBaseURL = "http://camel-quarkus-jsonvalidation-api.rh-dev.svc:8080"
 // oidcIssuerEndpoint
-def oidcIssuerEndpoint = "https://apim-demo-zync-component:e81146e6-bbbf-446f-813e-1ed3d9bd4973@sso.apps.jeannyil.sandbox235.opentlc.com/auth/realms/RH3scaleAdminPortal"
+def oidcIssuerEndpoint = "https://3scale-rhpds-zync-component:eb15816d-aaab-48d2-918e-b5ca240fbc9a@sso.apps.jeannyil.sandbox1444.opentlc.com/auth/realms/RH3scaleAdminPortal"
 // Client ID (OpenID Connect protocol)
 def clientId = "azerty1234567890"
 // Client Secret (OpenID Connect protocol)
@@ -31,8 +31,8 @@ def clientSecret = "5b4d049d-3a96-407a-a1dd-c7d631e40e48"
 // Developer Account Id
 def developerAccountId = "developer"
 
-def publicStagingBaseURL = "https://camel-quarkus-jsonvalidation-api-staging.apps.jeannyil.sandbox235.opentlc.com"
-def publicProductionBaseURL = "https://camel-quarkus-jsonvalidation-api.apps.jeannyil.sandbox235.opentlc.com" 
+def publicStagingBaseURL = "https://camel-quarkus-jsonvalidation-api-staging.apps.cluster-7kzfp.7kzfp.sandbox104.opentlc.com"
+def publicProductionBaseURL = "https://camel-quarkus-jsonvalidation-api.apps.cluster-7kzfp.7kzfp.sandbox104.opentlc.com" 
 
 node() {
 
@@ -103,7 +103,7 @@ def runToolbox(args) {
             "containers": [
                 [
                 "name": "job",
-                "image": "image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10",
+                "image": "image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.9",
                 "imagePullPolicy": "Always",
                 "args": [ "3scale", "version" ],
                 "env": [

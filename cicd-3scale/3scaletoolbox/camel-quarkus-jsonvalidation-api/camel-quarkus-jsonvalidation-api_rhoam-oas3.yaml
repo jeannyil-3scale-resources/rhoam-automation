@@ -10,7 +10,7 @@ info:
     name: MIT License
     url: https://opensource.org/licenses/MIT
 servers:
-- url: http://sample-json-validation-api.apps.jeannyil.sandbox1444.opentlc.com
+- url: http://sample-json-validation-api.apps.jeannyil.sandbox1444.opentlc.com/
   description: API Backend URL
 paths:
   /validateMembershipJSON:

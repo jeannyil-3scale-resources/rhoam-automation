@@ -21,7 +21,10 @@ def targetSystemName = "camel_quarkus_jsonvalidation_apip_v1"
 // Remote RHOAM/3scale API Management instance
 def targetInstance = "3scale-rhpds"
 // API backend URL
-def privateBaseURL = "http://camel-quarkus-jsonvalidation-api.rh-dev.svc:8080"
+// Using the OpenShift service FQDN
+// def privateBaseURL = "http://camel-quarkus-jsonvalidation-api.rh-dev.svc:8080"
+// Using the OpenShift route
+def privateBaseURL = "camel-quarkus-jsonvalidation-api-rh-test.apps.jeannyil.sandbox1444.opentlc.com"
 // oidcIssuerEndpoint
 def oidcIssuerEndpoint = "https://3scale-rhpds-zync-component:eb15816d-aaab-48d2-918e-b5ca240fbc9a@sso.apps.jeannyil.sandbox1444.opentlc.com/auth/realms/RH3scaleAdminPortal"
 // Client ID (OpenID Connect protocol)

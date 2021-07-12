@@ -14,17 +14,17 @@ done
 # /!\ Create the persistent Jenkins instance
 
 # - Using an OpenShift template
-# oc new-app --template=jenkins-persistent \
-# -p VOLUME_CAPACITY=4Gi \
-# -p MEMORY_LIMIT=2Gi \
-# -p ENABLE_OAUTH=true
+oc new-app --template=jenkins-persistent \
+-p VOLUME_CAPACITY=4Gi \
+-p MEMORY_LIMIT=2Gi \
+-p ENABLE_OAUTH=true
 
 # - Using the Jenkins Operator
 # /!\ Install the Jenkins Operator in the DEV project
 # TODO
 
 # Create the Jenkins instance:
-oc create --save-config -f setup/jenkins-persistent_cr.yaml
+# oc create --save-config -f setup/jenkins-persistent_cr.yaml
 
 # /!\ If Jenkins Instance is installed using the OpenShift template
 # oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${DEV_PROJECT}
@@ -73,9 +73,9 @@ oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n 
 oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:default -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template
-# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
 # \!\ If Jenkins Instance is installed using the  Jenkins Operator
-oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${TEST_PROJECT}
+# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${TEST_PROJECT}
 
 ##### END: Set up Test Project #####
 
@@ -95,9 +95,9 @@ oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n 
 oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:default -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template
-# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${PROD_PROJECT}
+oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${PROD_PROJECT}
 # /!\ If Jenkins Instance is installed using the  Jenkins Operator
-oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${PROD_PROJECT}
+# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${PROD_PROJECT}
 
 ##### END: Set up PROD Project #####
 

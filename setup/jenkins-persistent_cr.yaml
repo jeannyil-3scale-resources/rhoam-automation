@@ -9,8 +9,10 @@ metadata:
 spec:
   persistentSpec:
     enabled: true
-    # Use default
+    # Use OCS block storage (Ceph RADOS Block Device volumes)
     #storageClassName: ocs-storagecluster-ceph-rbd
+    # Use AWS-ebs volume
+    storageClassName: gp2
     volumeSize: 5Gi
   metricsEnabled: true
   backupEnabled: false

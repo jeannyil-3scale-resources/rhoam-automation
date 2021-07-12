@@ -43,7 +43,10 @@ pipeline {
 
                     def envName = params.TEST_PROJECT
                     def app_name= 'camel-quarkus-jsonvalidation-api'
-                    def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
+                    // Using the OpenShift service FQDN
+                    // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
+                    // Using the OpenShift route
+                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox1444.opentlc.com"
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
@@ -127,7 +130,10 @@ pipeline {
 
                     def envName = params.PROD_PROJECT
                     def app_name= 'camel-quarkus-jsonvalidation-api'
-                    def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
+                    // Using the OpenShift service FQDN
+                    // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
+                    // Using the OpenShift route
+                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox1444.opentlc.com"
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"

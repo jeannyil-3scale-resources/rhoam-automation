@@ -9,7 +9,8 @@ metadata:
 spec:
   persistentSpec:
     enabled: true
-    storageClassName: ocs-storagecluster-ceph-rbd
+    # Use default
+    #storageClassName: ocs-storagecluster-ceph-rbd
     volumeSize: 5Gi
   metricsEnabled: true
   backupEnabled: false

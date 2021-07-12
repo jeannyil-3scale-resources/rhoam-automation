@@ -107,7 +107,7 @@ parameters:
   value: apim-demo
   required: true
 - name: OIDC_ISSUER_ENDPOINT
-  value: https://apim-demo-zync-component:e81146e6-bbbf-446f-813e-1ed3d9bd4973@sso.apps.jeannyil.sandbox235.opentlc.com/auth/realms/RH3scaleAdminPortal
+  value: https://3scale-rhpds-zync-component:eb15816d-aaab-48d2-918e-b5ca240fbc9a@sso.apps.jeannyil.sandbox1444.opentlc.com/auth/realms/RH3scaleAdminPortal
   required: true
 - name: DEVELOPER_ACCOUNT_ID
   required: true

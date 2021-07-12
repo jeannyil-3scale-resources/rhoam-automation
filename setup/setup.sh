@@ -49,9 +49,9 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-q
 -p DEV_PROJECT=$DEV_PROJECT \
 -p TEST_PROJECT=$TEST_PROJECT \
 -p PROD_PROJECT=$PROD_PROJECT \
--p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox235.opentlc.com \
--p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox235.opentlc.com \
--p OIDC_ISSUER_ENDPOINT="https://apim-demo-zync-component:2d4609fd-334d-499e-8b20-124e3da37d6b@sso.apps.jeannyil.sandbox235.opentlc.com/auth/realms/RH3scaleAdminPortal" \
+-p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox1444.opentlc.com \
+-p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox1444.opentlc.com \
+-p OIDC_ISSUER_ENDPOINT="https://apim-demo-zync-component:2d4609fd-334d-499e-8b20-124e3da37d6b@sso.apps.jeannyil.sandbox1444.opentlc.com/auth/realms/RH3scaleAdminPortal" \
 -p DEVELOPER_ACCOUNT_ID=developer \
 -p BASIC_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml" \
 -p UNLIMITED_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml" \

@@ -37,8 +37,8 @@
           ```
       2. Import the 3scale Toolbox image in the DEV OpenShift project:
           ```zsh
-          oc import-image 3scale-amp2/toolbox-rhel7:3scale2.10 \
-          --from=registry.redhat.io/3scale-amp2/toolbox-rhel7:3scale2.10 \
+          oc import-image 3scale-amp2/toolbox-rhel7:3scale2.9 \
+          --from=registry.redhat.io/3scale-amp2/toolbox-rhel7:3scale2.9 \
           --confirm
           ```
     - **OR** - you can use image version from [quay.io](https://quay.io/repository/redhat/3scale-toolbox?tag=v0.18.2&tab=tags)

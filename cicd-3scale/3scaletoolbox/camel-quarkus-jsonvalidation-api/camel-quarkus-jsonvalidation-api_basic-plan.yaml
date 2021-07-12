@@ -8,6 +8,7 @@ plan:
   system_name: basic_plan
   approval_required: false
   default: false
+  state: published
 limits: 
 - period: minute
   value: 10

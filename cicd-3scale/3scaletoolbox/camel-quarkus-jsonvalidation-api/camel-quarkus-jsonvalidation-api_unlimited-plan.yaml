@@ -8,6 +8,7 @@ plan:
   system_name: unlimited_plan
   approval_required: true
   default: false
+  state: published
 limits: []
 pricingrules: []
 plan_features:

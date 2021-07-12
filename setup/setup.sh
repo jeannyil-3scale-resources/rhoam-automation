@@ -51,12 +51,12 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-q
 -p PROD_PROJECT=$PROD_PROJECT \
 -p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox1444.opentlc.com \
 -p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox1444.opentlc.com \
--p OIDC_ISSUER_ENDPOINT="https://apim-demo-zync-component:2d4609fd-334d-499e-8b20-124e3da37d6b@sso.apps.jeannyil.sandbox1444.opentlc.com/auth/realms/RH3scaleAdminPortal" \
+-p OIDC_ISSUER_ENDPOINT="https://3scale-rhpds-zync-component:eb15816d-aaab-48d2-918e-b5ca240fbc9a@sso.apps.jeannyil.sandbox1444.opentlc.com/auth/realms/RH3scaleAdminPortal" \
 -p DEVELOPER_ACCOUNT_ID=developer \
 -p BASIC_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml" \
 -p UNLIMITED_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml" \
 -p DISABLE_TLS_VALIDATION="no" \
--p TOOLBOX_IMAGE_REGISTRY="image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10"
+-p TOOLBOX_IMAGE_REGISTRY="image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.9"
 
 ##### END: Set up DEV Project #####
 

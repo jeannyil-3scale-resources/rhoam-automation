@@ -68,8 +68,8 @@ pipeline {
                                       secretName: params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
-                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
+                                    [ systemName: "basic_plan", name: "Basic", defaultPlan: true, published: true ],
+                                    [ systemName: "unlimited_plan", name: "Unlimited", published: true ]
                             ],
                             applications: [
                                     [name: envName, description: "This is used for test environment ", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
@@ -155,8 +155,8 @@ pipeline {
                                       secretName: params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
-                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
+                                    [ systemName: "basic_plan", name: "Basic", defaultPlan: true, published: true ],
+                                    [ systemName: "unlimited_plan", name: "Unlimited", published: true ]
                             ],
                             applications: [
                                     [name:envName, description: "This is used for production", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
@@ -241,3 +241,7 @@ def getTokenEndpoint(String oidcIssuerEndpoint) {
     def m = (oidcIssuerEndpoint =~ /(https?:\/\/)[^:]+:[^@]+@(.*)/)
     return "${m[0][1]}${m[0][2]}/protocol/openid-connect/token"
 }
+
+// Application plans from YAML files:
+// [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
+// [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]

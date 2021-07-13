@@ -54,7 +54,6 @@ pipeline {
                             openapi: [filename: "./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_rhoam-oas3.json"],
                             environment: [baseSystemName                : params.API_BASE_SYSTEM_NAME,
                                           privateBaseUrl                : backend_service,
-                                          privateBasePath               : "/",
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
                                           publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
@@ -141,7 +140,6 @@ pipeline {
                             openapi: [filename: "./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_rhoam-oas3.json"],
                             environment: [baseSystemName                : params.API_BASE_SYSTEM_NAME,
                                           privateBaseUrl                : backend_service,
-                                          privateBasePath               : "/",
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
                                           publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
@@ -245,3 +243,6 @@ def getTokenEndpoint(String oidcIssuerEndpoint) {
 // Application plans from YAML files:
 // [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
 // [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
+
+// Threescale Jenkins library conf
+// privateBasePath               : "/",

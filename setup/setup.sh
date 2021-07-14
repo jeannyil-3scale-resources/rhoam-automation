@@ -57,7 +57,7 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-q
 -p BASIC_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml" \
 -p UNLIMITED_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml" \
 -p DISABLE_TLS_VALIDATION="no" \
--p TOOLBOX_IMAGE_REGISTRY="image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.9"
+-p TOOLBOX_IMAGE_REGISTRY="image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10"
 
 ##### END: Set up DEV Project #####
 

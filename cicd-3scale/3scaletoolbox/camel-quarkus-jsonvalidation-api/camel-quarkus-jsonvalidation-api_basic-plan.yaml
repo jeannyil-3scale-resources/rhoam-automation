@@ -12,16 +12,7 @@ plan:
 limits: 
 - period: minute
   value: 10
-  metric_system_name: post_validateMembershipJSON
-- period: day
-  value: 100
-  metric_system_name: get_validateMembershipJSON_oas
-- period: minute
-  value: 30
-  metric_system_name: get_health
-- period: minute
-  value: 30
-  metric_system_name: get_metrics
+  metric_system_name: validateMembershipJSON
 pricingrules: []
 plan_features:
 - name: Limited Calls
@@ -30,19 +21,7 @@ plan_features:
   visible: true
 metrics: []
 methods:
-- name: post_validateMembershipJSON
-  system_name: post_validateMembershipJSON
-  friendly_name: POST /validateMembershipJSON
-  description: 'Validates a Membership JSON instance'
-- name: get_validateMembershipJSON_oas
-  system_name: get_validateMembershipJSON_oas
-  friendly_name: GET /openapi.json
-  description: 'Returns the OpenAPI specification for the service.'
-- name: get_health
-  system_name: get_health
-  friendly_name: GET /health
-  description: 'returns the Camel Quarkus MicroProfile health checks'
-- name: get_metrics
-  system_name: get_metrics
-  friendly_name: GET /metrics
-  description: 'returns the Camel Quarkus MicroProfile metrics in Prometheus or JSON format'
+- name: validateMembershipJSON
+  system_name: validateMembershipJSON
+  friendly_name: validateMembershipJSON
+  description: 'Validates a `Membership` JSON instance'

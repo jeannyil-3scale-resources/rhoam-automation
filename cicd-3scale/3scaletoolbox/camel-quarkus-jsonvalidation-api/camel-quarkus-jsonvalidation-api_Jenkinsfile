@@ -46,7 +46,7 @@ pipeline {
                     // Using the OpenShift service FQDN
                     // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     // Using the OpenShift route
-                    def backend_service = "http://" + app_name + "-" + envName + ".apps.cluster-7kzfp.7kzfp.sandbox104.opentlc.com"
+                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox1047.opentlc.com"
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
@@ -133,7 +133,7 @@ pipeline {
                     // Using the OpenShift service FQDN
                     // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     // Using the OpenShift route
-                    def backend_service = "http://" + app_name + "-" + envName + ".apps.cluster-7kzfp.7kzfp.sandbox104.opentlc.com"
+                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox1047.opentlc.com"
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"

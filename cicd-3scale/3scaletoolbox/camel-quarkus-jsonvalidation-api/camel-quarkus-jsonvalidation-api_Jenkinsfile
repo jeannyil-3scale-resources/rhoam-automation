@@ -56,8 +56,8 @@ pipeline {
                                           privateBaseUrl                : backend_service,
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "staging.apps.jeannyil.sandbox1148.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p" + envName + ".apps.jeannyil.sandbox1148.opentlc.com",
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox1148.opentlc.com",
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox1148.opentlc.com",
                                           publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
                                           publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
                                         ],
@@ -90,8 +90,16 @@ pipeline {
                     service.applyApplication()
 
                     // TODO : create OpenShift routes for the service
+                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-stage-apicast \
+                    // --service=apicast-test-tenant-staging-apicast \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox1148.opentlc.com \
+                    // --port=proxy
 
-                    // TO DO : OPTIMIZE JWT token integration
+                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-prod-apicast \ 
+                    // --service=apicast-test-tenant-prod-apicast \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox1148.opentlc.com \
+                    // --port=proxy
+
                     echo "Run integration tests"
                     runIntegrationTests(service)
 
@@ -180,9 +188,19 @@ pipeline {
                     echo "Create an Application"
                     service.applyApplication()
 
-                    // TO DO : OPTIMIZE JWT token integration
-                    // echo "Run integration tests"
-                    // runIntegrationTests(service)
+                    // TODO : create OpenShift routes for the service
+                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-stage-apicast \
+                    // --service=apicast-test-tenant-staging-apicast \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox1148.opentlc.com \
+                    // --port=proxy
+
+                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-prod-apicast \ 
+                    // --service=apicast-test-tenant-prod-apicast \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox1148.opentlc.com \
+                    // --port=proxy
+
+                    echo "Run integration tests"
+                    runIntegrationTests(service)
                     
                     echo "Promote to production"
                     service.promoteToProduction()

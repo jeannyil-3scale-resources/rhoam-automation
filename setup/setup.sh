@@ -22,10 +22,10 @@ done
 # - Using the Jenkins Operator
 # /!\ Install the Jenkins Operator in the DEV project through OLM
 ## Create the namespace OperatorGroup (the Jenkins operator is singleNamespace-scoped)
-oc create --save-config -f ./rh-dev-operatorgroup.yaml
+oc create --save-config -f setup/rh-dev-operatorgroup.yaml
 
 ## The _Jenkins Operator_ subscription
-oc create --save-config -f ./openshift-jenkins-operator-subscription.yaml
+oc create --save-config -f setup/openshift-jenkins-operator-subscription.yaml
 
 ## Wait for Jenkins Operator to be installed
 watch oc get sub,csv,installPlan

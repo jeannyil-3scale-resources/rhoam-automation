@@ -88,8 +88,8 @@ pipeline {
                     service.applyApplication()
 
                     // TO DO : OPTIMIZE JWT token integration
-                    // echo "Run integration tests"
-                    // runIntegrationTests(service)
+                    echo "Run integration tests"
+                    runIntegrationTests(service)
 
                     echo "Promote to production"
                     service.promoteToProduction()

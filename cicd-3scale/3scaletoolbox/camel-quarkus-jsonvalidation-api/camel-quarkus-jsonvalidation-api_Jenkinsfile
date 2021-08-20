@@ -194,7 +194,7 @@ pipeline {
                     // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox1148.opentlc.com \
                     // --port=proxy
 
-                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-prod-apicast \ 
+                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-prod-apicast \
                     // --service=apicast-test-tenant-prod-apicast \
                     // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox1148.opentlc.com \
                     // --port=proxy

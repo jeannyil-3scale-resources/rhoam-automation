@@ -46,7 +46,7 @@ pipeline {
                     // Using the OpenShift service FQDN
                     // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     // Using the OpenShift route
-                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox1148.opentlc.com"
+                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
@@ -56,8 +56,8 @@ pipeline {
                                           privateBaseUrl                : backend_service,
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox1148.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox1148.opentlc.com",
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox452.opentlc.com",
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com",
                                           publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
                                           publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
                                         ],
@@ -92,12 +92,12 @@ pipeline {
                     // TODO : create OpenShift routes for the service
                     // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-stage-apicast \
                     // --service=apicast-test-tenant-staging-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox1148.opentlc.com \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy
 
                     // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-prod-apicast \ 
                     // --service=apicast-test-tenant-prod-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox1148.opentlc.com \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy
 
                     // TODO: fix integration test
@@ -146,7 +146,7 @@ pipeline {
                     // Using the OpenShift service FQDN
                     // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     // Using the OpenShift route
-                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox1148.opentlc.com"
+                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
@@ -156,8 +156,8 @@ pipeline {
                                           privateBaseUrl                : backend_service,
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox1148.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox1148.opentlc.com",
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox452.opentlc.com",
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com",
                                           publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
                                           publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
                                         ],
@@ -192,12 +192,12 @@ pipeline {
                     // TODO : create OpenShift routes for the service
                     // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-stage-apicast \
                     // --service=apicast-test-tenant-staging-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox1148.opentlc.com \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy
 
                     // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-prod-apicast \
                     // --service=apicast-test-tenant-prod-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox1148.opentlc.com \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy
 
                     // TODO: fix integration test

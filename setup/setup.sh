@@ -34,16 +34,26 @@ oc new-app --template=jenkins-persistent \
 # oc create --save-config -f setup/jenkins-persistent_cr.yaml
 
 # /!\ If Jenkins Instance is installed using the OpenShift template
-oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${DEV_PROJECT}
+oc policy add-role-to-user admin system:serviceaccount:${DEV_PROJECT}:jenkins -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the  Jenkins Operator
-# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${DEV_PROJECT}
+# oc policy add-role-to-user admin system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${DEV_PROJECT}
 
 echo "import camel-quarkus-jsonvalidation-api CI/CD build pipeline"
-oc new-app -f cicd-api-build/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_build-deploy-pipeline.yml \
+oc new-app -f cicd-api-build/camel-quarkus-jsonvalidation-api/build-deploy-pipeline.yml \
 -p IMAGE_NAMESPACE=$DEV_PROJECT \
 -p DEV_PROJECT=$DEV_PROJECT \
 -p TEST_PROJECT=$TEST_PROJECT \
 -p PROD_PROJECT=$PROD_PROJECT
+
+echo "import camel-quarkus-rhoam-webhook-handler-api CI/CD build pipeline"
+oc new-app -f cicd-api-build/camel-quarkus-rhoam-webhook-handler-api/build-deploy-pipeline.yml \
+-p IMAGE_NAMESPACE=$DEV_PROJECT \
+-p DEV_PROJECT=$DEV_PROJECT \
+-p TEST_PROJECT=$TEST_PROJECT \
+-p PROD_PROJECT=$PROD_PROJECT \
+-p AMQP_BROKER_URL="amqps://amq-ssl-broker-amqp-0-svc.amq7-broker-cluster.svc:5672?transport.trustAll=true&transport.verifyHost=false&amqp.idleTimeout=120000" \
+-p AMQP_BROKER_USER="amq-user" \
+-p AMQP_BROKER_PWD="P@ssw0rd"
 
 # echo "import integration-master-pipeline"
 # TODO
@@ -81,9 +91,9 @@ oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n 
 oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:default -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template
-oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+oc policy add-role-to-user admin system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
 # \!\ If Jenkins Instance is installed using the  Jenkins Operator
-# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${TEST_PROJECT}
+# oc policy add-role-to-user admin system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${TEST_PROJECT}
 
 ##### END: Set up Test Project #####
 
@@ -102,9 +112,9 @@ oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n 
 oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:default -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template
-oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${PROD_PROJECT}
+oc policy add-role-to-user admin system:serviceaccount:${DEV_PROJECT}:jenkins -n ${PROD_PROJECT}
 # /!\ If Jenkins Instance is installed using the  Jenkins Operator
-# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${PROD_PROJECT}
+# oc policy add-role-to-user admin system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${PROD_PROJECT}
 
 ##### END: Set up PROD Project #####
 

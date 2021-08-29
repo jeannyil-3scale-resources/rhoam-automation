@@ -89,6 +89,9 @@ done
 
 oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n ${TEST_PROJECT}
 oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:default -n ${DEV_PROJECT}
+oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:camel-quarkus-http -n ${DEV_PROJECT}
+oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:camel-quarkus-jsonvalidation-api -n ${DEV_PROJECT}
+oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:camel-quarkus-xmlvalidation-api -n ${DEV_PROJECT}
 oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:camel-quarkus-rhoam-webhook-handler-api -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template
@@ -111,6 +114,9 @@ done
 
 oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:default -n ${PROD_PROJECT}
 oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:default -n ${DEV_PROJECT}
+oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:camel-quarkus-http -n ${DEV_PROJECT}
+oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:camel-quarkus-jsonvalidation-api -n ${DEV_PROJECT}
+oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:camel-quarkus-xmlvalidation-api -n ${DEV_PROJECT}
 oc policy add-role-to-user system:image-puller system:serviceaccount:${PROD_PROJECT}:camel-quarkus-rhoam-webhook-handler-api -n ${DEV_PROJECT}
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template

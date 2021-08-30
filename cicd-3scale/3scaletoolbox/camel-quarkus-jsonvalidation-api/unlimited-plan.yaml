@@ -1,11 +1,12 @@
 ---
 plan:
   name: Unlimited
+  state: published
   setup_fee: 0.0
   cost_per_month: 0.0
   trial_period_days: 0
   cancellation_period: 0
-  system_name: unlimited_plan
+  system_name: json-validation-api_unlimited_plan
   approval_required: true
   default: false
 limits: []

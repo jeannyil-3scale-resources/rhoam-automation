@@ -1,11 +1,12 @@
 ---
 plan:
   name: Basic
+  state: published
   setup_fee: 0.0
   cost_per_month: 0.0
   trial_period_days: 0
   cancellation_period: 0
-  system_name: basic_plan
+  system_name: json-validation-api_basic_plan
   approval_required: false
   default: false
 limits: 

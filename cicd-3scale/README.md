@@ -49,12 +49,12 @@
           --confirm
         ```
 
-6. view [3scale-toolbox Jenkinsfile for camel-quarkus-jsonvalidation-api](./3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_Jenkinsfile)
+6. view [3scale-toolbox Jenkinsfile for camel-quarkus-jsonvalidation-api](./3scaletoolbox/camel-quarkus-jsonvalidation-api/Jenkinsfile)
 
 7. Create pipeline, update the pipeline parameters as per your environment .
 
     ```zsh
-    oc new-app -f ./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_pipeline-template.yaml  \
+    oc new-app -f ./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/pipeline-template.yaml  \
     -p IMAGE_NAMESPACE=rh-dev \
     -p DEV_PROJECT=rh-dev \
     -p TEST_PROJECT=rh-test \

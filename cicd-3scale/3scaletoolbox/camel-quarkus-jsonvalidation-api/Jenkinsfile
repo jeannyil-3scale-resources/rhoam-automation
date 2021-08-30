@@ -57,9 +57,7 @@ pipeline {
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
                                           stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox452.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com",
-                                          publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
-                                          publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
                                         ],
                             toolbox: [openshiftProject: params.DEV_PROJECT, 
                                       destination: params.TARGET_INSTANCE,
@@ -157,9 +155,7 @@ pipeline {
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
                                           stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox452.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com",
-                                          publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
-                                          publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
                                         ],
                             toolbox: [openshiftProject: params.DEV_PROJECT, 
                                       destination: params.TARGET_INSTANCE,

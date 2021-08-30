@@ -46,7 +46,7 @@ pipeline {
                     // Using the OpenShift service FQDN
                     // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     // Using the OpenShift route
-                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
+                    def backend_service = "http://" + app_name + "-" + envName + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
@@ -56,8 +56,8 @@ pipeline {
                                           privateBaseUrl                : backend_service,
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox452.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-" + params.PUBLIC_STAGING_WILDCARD_DOMAIN,
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
                                         ],
                             toolbox: [openshiftProject: params.DEV_PROJECT, 
                                       destination: params.TARGET_INSTANCE,
@@ -144,7 +144,7 @@ pipeline {
                     // Using the OpenShift service FQDN
                     // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     // Using the OpenShift route
-                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
+                    def backend_service = "http://" + app_name + "-" + envName + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
@@ -154,8 +154,8 @@ pipeline {
                                           privateBaseUrl                : backend_service,
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox452.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-" + params.PUBLIC_STAGING_WILDCARD_DOMAIN,
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
                                         ],
                             toolbox: [openshiftProject: params.DEV_PROJECT, 
                                       destination: params.TARGET_INSTANCE,

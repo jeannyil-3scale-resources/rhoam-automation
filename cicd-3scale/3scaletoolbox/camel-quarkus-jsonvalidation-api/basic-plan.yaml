@@ -6,9 +6,9 @@ plan:
   cost_per_month: 0.0
   trial_period_days: 0
   cancellation_period: 0
-  system_name: json-validation-api_basic_plan
   approval_required: false
   default: false
+  system_name: json-validation-api_basic_plan
 limits: 
 - period: minute
   value: 10
@@ -19,6 +19,7 @@ plan_features:
   system_name: limited_calls
   scope: application_plan
   visible: true
+  description: ''
 metrics: []
 methods:
 - name: validateMembershipJSON

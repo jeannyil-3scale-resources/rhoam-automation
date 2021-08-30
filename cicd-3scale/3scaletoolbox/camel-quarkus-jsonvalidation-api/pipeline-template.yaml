@@ -27,7 +27,7 @@ objects:
     strategy:
       type: JenkinsPipeline
       jenkinsPipelineStrategy:
-        jenkinsfilePath: cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_Jenkinsfile
+        jenkinsfilePath: cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/Jenkinsfile
         env:
         - name: GIT_BRANCH
           value: ${GIT_BRANCH}
@@ -107,15 +107,16 @@ parameters:
   value: apim-demo
   required: true
 - name: OIDC_ISSUER_ENDPOINT
-  value: https://3scale-rhpds-zync-component:eb15816d-aaab-48d2-918e-b5ca240fbc9a@sso.apps.jeannyil.sandbox452.opentlc.com/auth/realms/RH3scaleAdminPortal
+  value: https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME>
   required: true
 - name: DEVELOPER_ACCOUNT_ID
+  value: john
   required: true
 - name: DISABLE_TLS_VALIDATION
   value: "yes"
 - name: BASIC_PLAN_YAML_FILE_PATH
-  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_basic-plan.yaml
+  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/basic-plan.yaml
 - name: UNLIMITED_PLAN_YAML_FILE_PATH
-  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_unlimited-plan.yaml
+  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/unlimited-plan.yaml
 - name: TOOLBOX_IMAGE_REGISTRY
   value: image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10

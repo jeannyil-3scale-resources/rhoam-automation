@@ -1,0 +1,40 @@
+---
+plan:
+  name: Basic
+  state: published
+  setup_fee: 0.0
+  cost_per_month: 0.0
+  trial_period_days: 0
+  cancellation_period: 0
+  approval_required: false
+  default: false
+  system_name: basic
+limits:
+- period: minute
+  value: 10
+  plan_id: 7
+  metric_system_name: echo_no_params
+- period: minute
+  value: 10
+  plan_id: 7
+  metric_system_name: echo_with_params
+pricingrules: []
+plan_features:
+- name: Limited Calls
+  system_name: limited_calls
+  scope: application_plan
+  visible: true
+  description: ''
+metrics: []
+methods:
+- name: echo_no_params
+  system_name: echo_no_params
+  friendly_name: echo_no_params
+  description: Echo API with no parameters
+  parent_id: 6
+- name: echo_with_params
+  system_name: echo_with_params
+  friendly_name: echo_with_params
+  description: Echo API with parameters
+  parent_id: 6
+

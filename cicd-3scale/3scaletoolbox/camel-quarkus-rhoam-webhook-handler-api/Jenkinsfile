@@ -20,7 +20,7 @@ pipeline {
         string (defaultValue: 'rh-test', name:'TEST_PROJECT', description:'Test project')
         string (defaultValue: 'rh-prod', name:'PROD_PROJECT', description:'Production project')
         string (defaultValue: 'https://github.com/jeannyil-rhoam-resources/rhoam-automation.git', name:'GIT_REPO', description:'Git source')
-        string (defaultValue: 'master', name:'GIT_BRANCH', description:'Git branch in the source git')
+        string (defaultValue: 'main', name:'GIT_BRANCH', description:'Git branch in the source git')
         booleanParam (defaultValue: false, name:'SELECT_DEPLOY_TO_PROD', description:'Approval to deploy to Production (default: no deployment to production)')
     }
 
@@ -42,24 +42,22 @@ pipeline {
                 script {
 
                     def envName = params.TEST_PROJECT
-                    def app_name= 'camel-quarkus-jsonvalidation-api'
+                    def app_name= 'camel-quarkus-rhoam-webhook-handler-api'
                     // Using the OpenShift service FQDN
                     // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     // Using the OpenShift route
-                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
+                    def backend_service = "http://" + app_name + "-" + envName + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
                     service = toolbox.prepareThreescaleService(
-                            openapi: [filename: "./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_rhoam-oas3.json"],
+                            openapi: [filename: "./cicd-3scale/3scaletoolbox/camel-quarkus-rhoam-webhook-handler-api/rhoam-oas3.json"],
                             environment: [baseSystemName                : params.API_BASE_SYSTEM_NAME,
                                           privateBaseUrl                : backend_service,
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox452.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com",
-                                          publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
-                                          publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-" + params.PUBLIC_STAGING_WILDCARD_DOMAIN,
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
                                         ],
                             toolbox: [openshiftProject: params.DEV_PROJECT, 
                                       destination: params.TARGET_INSTANCE,
@@ -69,11 +67,11 @@ pipeline {
                                       secretName: params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [ systemName: "basic_plan", name: "Basic", defaultPlan: true, published: true ],
-                                    [ systemName: "unlimited_plan", name: "Unlimited", published: true ]
+                                    [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
                             ],
                             applications: [
-                                    [name: envName, description: "This is used for test environment ", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
+                                    [name: envName, description: "This is used for test environment ", plan: "rhoam-webhook-handler-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
                             ]
                     )
 
@@ -90,19 +88,18 @@ pipeline {
                     service.applyApplication()
 
                     // TODO : create OpenShift routes for the service
-                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-stage-apicast \
-                    // --service=apicast-test-tenant-staging-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
+                    // oc create route edge camel-quarkus-rhoam-webhook-handler-api-3scale-tenant-stage-apicast \
+                    // --service=apicast-3scale-tenant-staging-apicast \
+                    // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy
 
-                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-prod-apicast \ 
-                    // --service=apicast-test-tenant-prod-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox452.opentlc.com \
+                    // oc create route edge camel-quarkus-rhoam-webhook-handler-api-3scale-tenant-prod-apicast \ 
+                    // --service=apicast-3scale-tenant-prod-apicast \
+                    // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy
 
-                    // TODO: fix integration test
-                    // echo "Run integration tests"
-                    // runIntegrationTests(service)
+                    echo "Run integration tests"
+                    runIntegrationTests(service)
 
                     echo "Promote to production"
                     service.promoteToProduction()
@@ -142,24 +139,22 @@ pipeline {
                 script {
 
                     def envName = params.PROD_PROJECT
-                    def app_name= 'camel-quarkus-jsonvalidation-api'
+                    def app_name= 'camel-quarkus-rhoam-webhook-handler-api'
                     // Using the OpenShift service FQDN
                     // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
                     // Using the OpenShift route
-                    def backend_service = "http://" + app_name + "-" + envName + ".apps.jeannyil.sandbox452.opentlc.com"
+                    def backend_service = "http://" + app_name + "-" + envName + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
                     println "${backend_service} "
 
                     echo "Prepare 3scale Configuration"
                     service = toolbox.prepareThreescaleService(
-                            openapi: [filename: "./cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/camel-quarkus-jsonvalidation-api_rhoam-oas3.json"],
+                            openapi: [filename: "./cicd-3scale/3scaletoolbox/camel-quarkus-rhoam-webhook-handler-api/rhoam-oas3.json"],
                             environment: [baseSystemName                : params.API_BASE_SYSTEM_NAME,
                                           privateBaseUrl                : backend_service,
                                           environmentName               : envName,
                                           oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
-                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-staging.apps.jeannyil.sandbox452.opentlc.com",
-                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + ".apps.jeannyil.sandbox452.opentlc.com",
-                                          publicStagingWildcardDomain   : params.PUBLIC_STAGING_WILDCARD_DOMAIN != "" ? params.PUBLIC_STAGING_WILDCARD_DOMAIN : null,
-                                          publicProductionWildcardDomain: params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN != "" ? params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN : null
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-" + params.PUBLIC_STAGING_WILDCARD_DOMAIN,
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
                                         ],
                             toolbox: [openshiftProject: params.DEV_PROJECT, 
                                       destination: params.TARGET_INSTANCE,
@@ -169,11 +164,11 @@ pipeline {
                                       secretName: params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [ systemName: "basic_plan", name: "Basic", defaultPlan: true, published: true ],
-                                    [ systemName: "unlimited_plan", name: "Unlimited", published: true ]
+                                    [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
+                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
                             ],
                             applications: [
-                                    [name:envName, description: "This is used for production", plan: "basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
+                                    [name:envName, description: "This is used for production", plan: "rhoam-webhook-handler-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
                             ]
                     )
 
@@ -190,19 +185,18 @@ pipeline {
                     service.applyApplication()
 
                     // TODO : create OpenShift routes for the service
-                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-stage-apicast \
-                    // --service=apicast-test-tenant-staging-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
+                    // oc create route edge camel-quarkus-rhoam-webhook-handler-api-3scale-tenant-stage-apicast \
+                    // --service=apicast-3scale-tenant-staging-apicast \
+                    // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy
 
-                    // oc create route edge camel-quarkus-jsonvalidation-api-test-tenant-prod-apicast \
-                    // --service=apicast-test-tenant-prod-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox452.opentlc.com \
+                    // oc create route edge camel-quarkus-rhoam-webhook-handler-api-3scale-tenant-prod-apicast \
+                    // --service=apicast-3scale-tenant-prod-apicast \
+                    // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy
 
-                    // TODO: fix integration test
-                    // echo "Run integration tests"
-                    // runIntegrationTests(service)
+                    echo "Run integration tests"
+                    runIntegrationTests(service)
                     
                     echo "Promote to production"
                     service.promoteToProduction()
@@ -223,39 +217,39 @@ def runIntegrationTests(def service) {
     def getCredentialsCodeSnippet = null
     if (service.openapi.securityScheme.name() == "OPEN") {
         getCredentialsCodeSnippet = """
-        credential_header="x-dummy: dummy"
-        echo "no credential will be used"
+            credential_header="x-dummy: dummy"
+            echo "no credential will be used"
         """
     } else if (service.openapi.securityScheme.name() == "APIKEY") {
         def userkey = service.applications[0].userkey
         getCredentialsCodeSnippet = """
-        credential_header="api-key: ${userkey}"
-        echo "userkey is ${userkey}"
+            credential_header="api-key: ${userkey}"
+            echo "userkey is ${userkey}"
         """
     } else if (service.openapi.securityScheme.name() == "OIDC") {
         def tokenEndpoint = getTokenEndpoint(params.OIDC_ISSUER_ENDPOINT)
         def clientId = service.applications[0].clientId
         def clientSecret = service.applications[0].clientSecret
         getCredentialsCodeSnippet = """
-        echo "token endpoint is ${tokenEndpoint}"
-        echo "client_id=${clientId}"
-        echo "client_secret=${clientSecret}"
-        curl -sfk "${tokenEndpoint}" -d client_id="${clientId}" -d client_secret="${clientSecret}" -d scope=openid -d grant_type=client_credentials -o response.json
-        curl -sLfk https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /tmp/jq
-        chmod 755 /tmp/jq
-        TOKEN="\$(/tmp/jq -r .access_token response.json)"
-        echo "Received access_token '\$TOKEN'"
-        credential_header="Authorization: Bearer \$TOKEN"
+            echo "token endpoint is ${tokenEndpoint}"
+            echo "client_id=${clientId}"
+            echo "client_secret=${clientSecret}"
+            curl -sfk "${tokenEndpoint}" -d client_id="${clientId}" -d client_secret="${clientSecret}" -d scope=openid -d grant_type=client_credentials -o response.json
+            curl -sLfk https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /tmp/jq
+            chmod 755 /tmp/jq
+            TOKEN="\$(/tmp/jq -r .access_token response.json)"
+            echo "Received access_token '\$TOKEN'"
+            credential_header="Authorization: Bearer \$TOKEN"
         """
     }
 
     // Run the actual tests
-    def postdata = '{\"requestType\": \"API\", \"requestID\": 5948, \"memberID\": 85623617, \"status\": \"A\", \"enrolmentDate\": \"2019-06-16\", \"changedBy\": \"jeanNyil\", \"forcedLevelCode\": \"69\", \"vipOnInvitation\": \"Y\", \"startDate\": \"2019-06-16\", \"endDate\": \"2100-06-16\"}'
     retry(5) {
-        sh """set -e
-        echo "Public Staging Base URL is ${proxy.sandbox_endpoint}"
-        ${getCredentialsCodeSnippet}
-        curl -sfk -w "POST validateMembershipJSON: %{http_code}\n" -o /dev/null -X POST -H "Content-Type: application/json" -H "\$credential_header" -d "${postdata}" "${proxy.sandbox_endpoint}/validateMembershipJSON"
+        sh """
+            set -e
+            echo "Public Staging Base URL is ${proxy.sandbox_endpoint}"
+            ${getCredentialsCodeSnippet}
+            curl -sfk -w "GET /webhook/amqpbridge: %{http_code}\n" -o /dev/null -X GET -H "Content-Type: application/json" -H "\$credential_header" "${proxy.sandbox_endpoint}/webhook/amqpbridge"
         """
     }
 
@@ -269,6 +263,10 @@ def getTokenEndpoint(String oidcIssuerEndpoint) {
 // Application plans from YAML files:
 // [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
 // [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
+
+// Application plans from inline:
+// [ systemName: "rhoam-webhook-handler-api_basic_plan", name: "Basic", defaultPlan: true, published: true ],
+// [ systemName: "rhoam-webhook-handler-api_unlimited_plan", name: "Unlimited", published: true ]
 
 // Threescale Jenkins library conf
 // privateBasePath               : "/",

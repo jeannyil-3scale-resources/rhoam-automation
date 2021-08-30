@@ -8,7 +8,7 @@ plan:
   cancellation_period: 0
   approval_required: false
   default: false
-  system_name: basic
+  system_name: rhoam-webhook-handler-api_basic_plan
 limits:
 - period: minute
   value: 10

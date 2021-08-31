@@ -88,15 +88,17 @@ pipeline {
                     service.applyApplication()
 
                     // TODO : create OpenShift routes for the service
-                    // oc create route edge camel-quarkus-jsonvalidation-api-3scale-tenant-stage-apicast \
+                    // oc create route edge camel-quarkus-jsonvalidation-apip-rhpds-3scale-tenant-rh-test-stage-apicast \
                     // --service=apicast-3scale-tenant-staging-apicast \
                     // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
-                    // --port=proxy
+                    // --port=proxy \
+                    // -n 3scale-gw
 
-                    // oc create route edge camel-quarkus-jsonvalidation-api-3scale-tenant-prod-apicast \ 
+                    // oc create route edge camel-quarkus-jsonvalidation-apip-rhpds-3scale-tenant-rh-test-prod-apicast \ 
                     // --service=apicast-3scale-tenant-prod-apicast \
                     // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox452.opentlc.com \
-                    // --port=proxy
+                    // --port=proxy \
+                    // -n 3scale-gw
 
                     // TODO: fix integration test
                     // echo "Run integration tests"

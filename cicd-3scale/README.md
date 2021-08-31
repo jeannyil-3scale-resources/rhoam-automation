@@ -41,11 +41,11 @@
           --from=registry.redhat.io/3scale-amp2/toolbox-rhel7:3scale2.10 \
           --confirm
           ```
-    - **OR** - you can use image version from [quay.io](https://quay.io/repository/redhat/3scale-toolbox?tag=v0.18.2&tab=tags)
+    - **OR** - you can use image version from [quay.io](https://quay.io/repository/redhat/3scale-toolbox?tag=v0.18.2&tab=tags). Example:
 
         ```zsh
-          oc import-image redhat/3scale-toolbox:v0.18.2 \
-          --from=quay.io/redhat/3scale-toolbox:v0.18.2 \
+          oc import-image redhat/3scale-toolbox:v0.19.0 \
+          --from=quay.io/redhat/3scale-toolbox:v0.19.0 \
           --confirm
         ```
 

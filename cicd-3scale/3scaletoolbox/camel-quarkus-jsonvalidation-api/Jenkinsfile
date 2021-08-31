@@ -89,10 +89,10 @@ pipeline {
 
                     // TODO : create OpenShift routes for the service
                     // oc create route edge camel-quarkus-jsonvalidation-apip-rhpds-3scale-tenant-rh-test-stage-apicast \
-                    // --service=apicast-3scale-tenant-staging-apicast \
+                    // --service=apicast-rhpds-3scale-tenant-staging-apicast \
                     // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
                     // --port=proxy \
-                    // -n 3scale-gw
+                    // -n $APICAST_NS
 
                     // oc create route edge camel-quarkus-jsonvalidation-apip-rhpds-3scale-tenant-rh-test-prod-apicast \ 
                     // --service=apicast-3scale-tenant-prod-apicast \

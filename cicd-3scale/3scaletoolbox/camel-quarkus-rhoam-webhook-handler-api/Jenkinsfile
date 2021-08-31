@@ -71,7 +71,7 @@ pipeline {
                                     [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
                             ],
                             applications: [
-                                    [name: envName, description: "This is used for test environment ", plan: "rhoam-webhook-handler-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
+                                    [name: envName, description: "This is used for Test environment integration testing", plan: "rhoam-webhook-handler-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
                             ]
                     )
 
@@ -91,12 +91,14 @@ pipeline {
                     // oc create route edge camel-quarkus-rhoam-webhook-handler-api-3scale-tenant-stage-apicast \
                     // --service=apicast-3scale-tenant-staging-apicast \
                     // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test-staging.apps.jeannyil.sandbox452.opentlc.com \
-                    // --port=proxy
+                    // --port=proxy \
+                    // -n 3scale-gw
 
                     // oc create route edge camel-quarkus-rhoam-webhook-handler-api-3scale-tenant-prod-apicast \ 
                     // --service=apicast-3scale-tenant-prod-apicast \
                     // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test.apps.jeannyil.sandbox452.opentlc.com \
-                    // --port=proxy
+                    // --port=proxy \
+                    // -n 3scale-gw
 
                     echo "Run integration tests"
                     runIntegrationTests(service)
@@ -168,7 +170,7 @@ pipeline {
                                     [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
                             ],
                             applications: [
-                                    [name:envName, description: "This is used for production", plan: "rhoam-webhook-handler-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
+                                    [name:envName, description: "This is used for Production environment integration testing", plan: "rhoam-webhook-handler-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
                             ]
                     )
 

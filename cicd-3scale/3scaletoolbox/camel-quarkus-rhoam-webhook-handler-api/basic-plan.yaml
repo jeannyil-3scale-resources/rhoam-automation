@@ -15,10 +15,10 @@ limits:
   metric_system_name: pingWebhook
 - period: minute
   value: 10
-  metric_system_name: echo_with_params
+  metric_system_name: sendToAMQPQueue
 pricingrules: []
 plan_features:
-- name: Limited Calls
+- name: 'Limited Calls'
   system_name: limited_calls
   scope: application_plan
   visible: true

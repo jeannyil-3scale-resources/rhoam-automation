@@ -15,7 +15,7 @@ limits:
   metric_system_name: validateMembershipJSON
 pricingrules: []
 plan_features:
-- name: Limited Calls
+- name: 'Limited Calls'
   system_name: limited_calls
   scope: application_plan
   visible: true

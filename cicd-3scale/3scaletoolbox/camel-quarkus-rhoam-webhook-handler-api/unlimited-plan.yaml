@@ -12,12 +12,12 @@ plan:
 limits: []
 pricingrules: []
 plan_features:
-- name: 24/7 support
+- name: '24/7 support'
   system_name: 24_7_support
   scope: application_plan
   visible: true
   description: ''
-- name: Unlimited calls
+- name: 'Unlimited calls'
   system_name: unlimited_calls
   scope: application_plan
   visible: true

@@ -12,11 +12,9 @@ plan:
 limits:
 - period: minute
   value: 10
-  plan_id: 7
-  metric_system_name: echo_no_params
+  metric_system_name: pingWebhook
 - period: minute
   value: 10
-  plan_id: 7
   metric_system_name: echo_with_params
 pricingrules: []
 plan_features:
@@ -27,14 +25,11 @@ plan_features:
   description: ''
 metrics: []
 methods:
-- name: echo_no_params
-  system_name: echo_no_params
-  friendly_name: echo_no_params
-  description: Echo API with no parameters
-  parent_id: 6
-- name: echo_with_params
-  system_name: echo_with_params
-  friendly_name: echo_with_params
-  description: Echo API with parameters
-  parent_id: 6
-
+- name: pingWebhook
+  system_name: pingWebhook
+  friendly_name: pingWebhook
+  description: 'Handles RHOAM webhook ping'
+- name: sendToAMQPQueue
+  system_name: sendToAMQPQueue
+  friendly_name: sendToAMQPQueue
+  description: 'Sends RHOAM Admin/Developer Portal webhook event to an AMQP queue'

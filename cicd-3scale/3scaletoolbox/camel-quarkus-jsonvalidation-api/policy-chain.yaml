@@ -9,7 +9,7 @@
     condition:
       combine_op: and
     enable_access_logs: false
-    custom_logging: '[{{time_local}}] [source ip: "{{headers[''''x-forwarded-for'''']}}"]
+    custom_logging: '[{{time_local}}] [source ip: "{{headers[''x-forwarded-for'']}}"]
       [local: {{host}}:{{server_port}}] [remote: {{remote_addr}}:{{remote_port}}]
       [request: "{{request}}" - status: {{status}} - body bytes sent: {{body_bytes_sent}}
       - request time: {{request_time}} - post action impact: {{post_action_impact}}]'
@@ -50,4 +50,3 @@
   version: builtin
   configuration: {}
   enabled: true
-  

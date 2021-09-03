@@ -23,12 +23,4 @@ plan_features:
   scope: application_plan
   visible: true
 metrics: []
-methods:
-- name: pingWebhook
-  system_name: pingWebhook
-  friendly_name: pingWebhook
-  description: 'Handles RHOAM webhook ping'
-- name: sendToAMQPQueue
-  system_name: sendToAMQPQueue
-  friendly_name: sendToAMQPQueue
-  description: 'Sends RHOAM Admin/Developer Portal webhook event to an AMQP queue'
+methods: []

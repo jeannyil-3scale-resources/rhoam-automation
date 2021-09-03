@@ -19,7 +19,6 @@ plan_features:
   system_name: limited_calls
   scope: application_plan
   visible: true
-  description: ''
 metrics: []
 methods:
 - name: validateMembershipJSON

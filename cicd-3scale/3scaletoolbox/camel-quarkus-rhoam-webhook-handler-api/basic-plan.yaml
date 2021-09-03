@@ -12,21 +12,24 @@ plan:
 limits:
 - period: minute
   value: 10
-  metric_system_name: pingWebhook
+  metric_system_name: pingwebhook
 - period: minute
   value: 10
-  metric_system_name: sendToAMQPQueue
+  metric_system_name: sendtoamqpqueue
 pricingrules: []
 plan_features:
 - name: 'Limited Calls'
   system_name: limited_calls
   scope: application_plan
   visible: true
+  description: 'Limited Calls'
 metrics: []
 methods:
 - name: pingWebhook
-  system_name: pingWebhook
+  system_name: pingwebhook
+  friendly_name: pingWebhook
   description: 'Handles RHOAM webhook ping'
 - name: sendToAMQPQueue
-  system_name: sendToAMQPQueue
+  system_name: sendtoamqpqueue
+  friendly_name: sendToAMQPQueue
   description: 'Sends RHOAM Admin/Developer Portal webhook event to an AMQP queue'

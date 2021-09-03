@@ -16,9 +16,11 @@ plan_features:
   system_name: 24_7_support
   scope: application_plan
   visible: true
+  description: '24/7 support'
 - name: 'Unlimited calls'
   system_name: unlimited_calls
   scope: application_plan
   visible: true
+  description: 'Unlimited calls'
 metrics: []
 methods: []

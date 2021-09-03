@@ -12,16 +12,17 @@ plan:
 limits: 
 - period: minute
   value: 10
-  metric_system_name: validateMembershipJSON
+  metric_system_name: validatemembershipjson
 pricingrules: []
 plan_features:
 - name: 'Limited Calls'
   system_name: limited_calls
   scope: application_plan
   visible: true
+  description: 'Limited Calls'
 metrics: []
 methods:
 - name: validateMembershipJSON
-  system_name: validateMembershipJSON
+  system_name: validatemembershipjson
   friendly_name: validateMembershipJSON
   description: 'Validates a `Membership` JSON instance'

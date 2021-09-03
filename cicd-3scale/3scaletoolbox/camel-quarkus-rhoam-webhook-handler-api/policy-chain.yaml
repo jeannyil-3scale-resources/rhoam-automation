@@ -1,3 +1,7 @@
+# Import 3scale toolbox CLI:
+# 3scale policies import \
+# --file='./policy-chain.yaml' \
+# --verbose rhpds-3scale-tenant rh-test_camel-quarkus-rhoam-webhook-handler-api_1
 ---
 - name: logging
   version: builtin

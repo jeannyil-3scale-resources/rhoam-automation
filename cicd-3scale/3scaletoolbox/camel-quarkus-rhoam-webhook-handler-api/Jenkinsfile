@@ -67,8 +67,8 @@ pipeline {
                                       secretName: params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
-                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
+                                    [ artefactFile: params.BASIC_PLAN_YAML_FILE_PATH ],
+                                    [ artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH ]
                             ],
                             applications: [
                                     [name: envName, description: "This is used for Test environment integration testing", plan: "rhoam-webhook-handler-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
@@ -166,8 +166,8 @@ pipeline {
                                       secretName: params.SECRET_NAME],
                             service: [:],
                             applicationPlans: [
-                                    [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
-                                    [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
+                                    [ artefactFile: params.BASIC_PLAN_YAML_FILE_PATH ],
+                                    [ artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH ]
                             ],
                             applications: [
                                     [name:envName, description: "This is used for Production environment integration testing", plan: "rhoam-webhook-handler-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
@@ -265,8 +265,8 @@ def getTokenEndpoint(String oidcIssuerEndpoint) {
 }
 
 // Application plans from YAML files:
-// [artefactFile: params.BASIC_PLAN_YAML_FILE_PATH],
-// [artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH]
+// [ artefactFile: params.BASIC_PLAN_YAML_FILE_PATH ],
+// [ artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH ]
 
 // Application plans from inline:
 // [ systemName: "rhoam-webhook-handler-api_basic_plan", name: "Basic", defaultPlan: true, published: true ],

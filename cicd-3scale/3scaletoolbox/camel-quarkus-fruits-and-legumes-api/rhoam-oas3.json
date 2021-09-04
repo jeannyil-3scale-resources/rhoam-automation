@@ -14,7 +14,7 @@
   },
   "servers": [
       {
-          "url": "http://camel-quarkus-http-camel-quarkus-native.apps.jeannyil.sandbox452.opentlc.com",
+          "url": "http://camel-quarkus-http-camel-quarkus-native.apps.jeannyil.sandbox430.opentlc.com",
           "description": "API Backend URL"
       }
   ],
@@ -213,7 +213,7 @@
           "oauth2": {
               "flows": {
                   "clientCredentials": {
-                      "tokenUrl": "https://sso.apps.jeannyil.sandbox452.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/token",
+                      "tokenUrl": "https://sso.apps.jeannyil.sandbox430.opentlc.com/auth/realms/RH3scaleAdminPortal/protocol/openid-connect/token",
                       "scopes": {
                           "openid": "OpenID Connect Protocol"
                       }

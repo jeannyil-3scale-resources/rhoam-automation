@@ -1,0 +1,26 @@
+---
+plan:
+  name: Unlimited
+  state: published
+  setup_fee: 0.0
+  cost_per_month: 0.0
+  trial_period_days: 0
+  cancellation_period: 0
+  approval_required: true
+  default: false
+  system_name: fruits-and-legumes-api_unlimited_plan
+limits: []
+pricingrules: []
+plan_features:
+- name: '24/7 support'
+  system_name: 24_7_support
+  scope: application_plan
+  visible: true
+  description: '24/7 support'
+- name: 'Unlimited calls'
+  system_name: unlimited_calls
+  scope: application_plan
+  visible: true
+  description: 'Unlimited calls'
+metrics: []
+methods: []

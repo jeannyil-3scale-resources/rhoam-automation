@@ -1,0 +1,122 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: pipeline-camel-quarkus-fruits-and-legumes-api-3scale
+metadata:
+  annotations:
+    description: 3scale API publishing Pipeline
+  name: publish-camel-quarkus-fruits-and-legumes-api-3scale
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      name: publish-camel-quarkus-fruits-and-legumes-api-3scale
+    name: publish-camel-quarkus-fruits-and-legumes-api-3scale
+  spec:
+    output: null
+    postCommit: null
+    resources: null
+    runPolicy: Serial
+    source:
+      type: None
+    source:
+      git:
+        uri: ${GIT_REPO}
+        ref: ${GIT_BRANCH}
+    strategy:
+      type: JenkinsPipeline
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: cicd-3scale/3scaletoolbox/camel-quarkus-fruits-and-legumes-api/Jenkinsfile
+        env:
+        - name: GIT_BRANCH
+          value: ${GIT_BRANCH}
+        - name: GIT_REPO
+          value: ${GIT_REPO}
+        - name: PRIVATE_BASE_URL
+          value: ${PRIVATE_BASE_URL}
+        - name: PUBLIC_PRODUCTION_WILDCARD_DOMAIN
+          value: ${PUBLIC_PRODUCTION_WILDCARD_DOMAIN}
+        - name: PUBLIC_STAGING_WILDCARD_DOMAIN
+          value: ${PUBLIC_STAGING_WILDCARD_DOMAIN}
+        - name: PRODUCTION_PUBLIC_BASE_URL
+          value: ${PRODUCTION_PUBLIC_BASE_URL}
+        - name: STAGING_PUBLIC_BASE_URL
+          value: ${STAGING_PUBLIC_BASE_URL}
+        - name: API_BASE_SYSTEM_NAME
+          value: ${API_BASE_SYSTEM_NAME}
+        - name: DEV_PROJECT
+          value: ${DEV_PROJECT}
+        - name: TEST_PROJECT
+          value: ${TEST_PROJECT}
+        - name: PROD_PROJECT
+          value: ${PROD_PROJECT}
+        - name: IMAGE_NAMESPACE
+          value: ${IMAGE_NAMESPACE}
+        - name: SECRET_NAME
+          value: ${SECRET_NAME}
+        - name: TARGET_INSTANCE
+          value: ${TARGET_INSTANCE}
+        - name: OIDC_ISSUER_ENDPOINT
+          value: ${OIDC_ISSUER_ENDPOINT}
+        - name: DEVELOPER_ACCOUNT_ID
+          value: ${DEVELOPER_ACCOUNT_ID}
+        - name: DISABLE_TLS_VALIDATION
+          value: ${DISABLE_TLS_VALIDATION}
+        - name: BASIC_PLAN_YAML_FILE_PATH
+          value: ${BASIC_PLAN_YAML_FILE_PATH}
+        - name: UNLIMITED_PLAN_YAML_FILE_PATH
+          value: ${UNLIMITED_PLAN_YAML_FILE_PATH}
+        - name: TOOLBOX_IMAGE_REGISTRY
+          value: ${TOOLBOX_IMAGE_REGISTRY}
+parameters:
+- name: GIT_REPO
+  value: https://github.com/jeannyil-rhoam-resources/rhoam-automation.git
+  required: true
+- name: GIT_BRANCH
+  value: master
+  required: true
+- name: PRIVATE_BASE_URL
+  value:
+  #required: true
+- name: PUBLIC_PRODUCTION_WILDCARD_DOMAIN
+  value:
+- name: PUBLIC_STAGING_WILDCARD_DOMAIN
+  value:
+- name: PRODUCTION_PUBLIC_BASE_URL
+  value:
+  #required: true
+- name: STAGING_PUBLIC_BASE_URL
+  value: 
+  #required: true
+- name: API_BASE_SYSTEM_NAME
+  value: camel-quarkus-fruits-and-legumes-api
+  required: true
+- name: DEV_PROJECT
+  required: true
+- name: TEST_PROJECT
+  required: true
+- name: PROD_PROJECT
+  required: true
+- name: IMAGE_NAMESPACE
+  required: true
+- name: SECRET_NAME
+  value: 3scale-toolbox
+  required: true  
+- name: TARGET_INSTANCE
+  value: apim-demo
+  required: true
+- name: OIDC_ISSUER_ENDPOINT
+  value: https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME>
+  required: true
+- name: DEVELOPER_ACCOUNT_ID
+  value: john
+  required: true
+- name: DISABLE_TLS_VALIDATION
+  value: "yes"
+- name: BASIC_PLAN_YAML_FILE_PATH
+  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-fruits-and-legumes-api/basic-plan.yaml
+- name: UNLIMITED_PLAN_YAML_FILE_PATH
+  value: https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-fruits-and-legumes-api/unlimited-plan.yaml
+- name: TOOLBOX_IMAGE_REGISTRY
+  value: image-registry.openshift-image-registry.svc:5000/rh-dev/toolbox-rhel7:3scale2.10

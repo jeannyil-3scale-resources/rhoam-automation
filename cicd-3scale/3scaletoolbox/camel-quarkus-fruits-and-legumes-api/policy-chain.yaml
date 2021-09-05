@@ -1,0 +1,52 @@
+# Import 3scale toolbox CLI:
+# 3scale policies import \
+# --file='./policy-chain.yaml' \
+# --verbose rhpds-3scale-tenant rh-test_camel-quarkus-fruits-and-legumes-api_1
+---
+- name: logging
+  version: builtin
+  configuration:
+    condition:
+      combine_op: and
+    enable_access_logs: false
+    custom_logging: '[{{time_local}}] [source ip: "{{headers[''x-forwarded-for'']}}"]
+      [local: {{host}}:{{server_port}}] [remote: {{remote_addr}}:{{remote_port}}]
+      [request: "{{request}}" - status: {{status}} - body bytes sent: {{body_bytes_sent}}
+      - request time: {{request_time}} - post action impact: {{post_action_impact}}]'
+    json_object_config:
+    - value: "{{time_local}}"
+      key: time_local
+      value_type: liquid
+    - value: "{{headers['x-forwarded-for']}}"
+      key: source_ip
+      value_type: liquid
+    - value: "{{host}}:{{server_port}}"
+      key: local
+      value_type: liquid
+    - value: "{{remote_addr}}:{{remote_port}}"
+      key: remote
+      value_type: liquid
+    - value: "{{request}}"
+      key: request
+      value_type: liquid
+    - value: "{{status}}"
+      key: status
+      value_type: liquid
+    - value: "{{body_bytes_sent}}"
+      key: body_bytes_sent
+      value_type: liquid
+    - value: "{{request_time}}"
+      key: request_time
+      value_type: liquid
+    - value: "{{post_action_impact}}"
+      key: post_action_impact
+      value_type: liquid
+  enabled: true
+- name: cors
+  version: builtin
+  configuration: {}
+  enabled: true
+- name: apicast
+  version: builtin
+  configuration: {}
+  enabled: true

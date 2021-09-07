@@ -165,8 +165,10 @@ oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJ
 oc policy add-role-to-user view --serviceaccount=default -n ${DEV_PROJECT}
 # /!\ If Jenkins Instance is installed using the OpenShift template
 oc policy add-role-to-user admin system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${SELF_MANAGED_APICAST_NS}
 # \!\ If Jenkins Instance is installed using the  Jenkins Operator
 # oc policy add-role-to-user admin system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${TEST_PROJECT}
+# oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins-persistent -n ${SELF_MANAGED_APICAST_NS}
 
 ##### END: Set up Test Project #####
 

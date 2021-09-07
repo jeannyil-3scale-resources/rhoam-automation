@@ -290,57 +290,57 @@ def getTokenEndpoint(String oidcIssuerEndpoint) {
 def createOrUpdateApicastSandboxRoute(String apicastNs, String apiProductName, String envName) {
     def tenantName = params.TARGET_INSTANCE
     def stagingWildcardDomain = params.PUBLIC_STAGING_WILDCARD_DOMAIN
-    sh """
-        set -e
-        oc --loglevel=5 -n ${apicastNs} replace --force -f - <<EOF
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-    labels:
-        app: apicast
-        threescale_component: apicast
-    name: "${apiProductName}-${tenantName}-${envName}-stage-apicast"
-spec:
-    host: "${apiProductName}-${envName}-${stagingWildcardDomain}"
-    port:
-        targetPort: proxy
-    tls:
-        termination: edge
-    to:
-        kind: Service
-        name: "apicast-${tenantName}-staging-apicast"
-        weight: 100
-    wildcardPolicy: None
-EOF
-    """
+    
+    try {
+        sh """ 
+            echo "Deleting the ${apiProductName}-${tenantName}-${envName}-stage-apicast OpenShift route in ${apicastNs} namespace ..."
+            oc delete route ${apiProductName}-${tenantName}-${envName}-stage-apicast -n ${apicastNs} 2> /dev/null
+        """
+    } catch (Exception e) {
+        echo "skip ${apiProductName}-${tenantName}-${envName}-stage-apicast route cleanup related exception, the resource may not exist." + e.getMessage();
+    }
+
+    try {
+        echo "Creating the ${apiProductName}-${tenantName}-${envName}-stage-apicast OpenShift route in ${apicastNs} namespace ..."
+        sh """ 
+            oc create route edge ${apiProductName}-${tenantName}-${envName}-stage-apicast \
+            --service=apicast-${tenantName}-staging-apicast \
+            --hostname=${apiProductName}-${envName}-${stagingWildcardDomain} \
+            --port=proxy \
+            -n ${apicastNs} 2> /dev/null
+        """
+    } catch (Exception e) {
+        echo "skip ${apiProductName}-${tenantName}-${envName}-stage-apicast route creation related exception, the resource may already exist. " + e.getMessage();
+    }
+
 }
 
 def createOrUpdateApicastProductionRoute(String apicastNs, String apiProductName, String envName) {
     def tenantName = params.TARGET_INSTANCE
     def productionWildcardDomain = params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
-    sh """
-        set -e
-        oc --loglevel=5 -n ${apicastNs} replace --force -f - <<EOF
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-    labels:
-        app: apicast
-        threescale_component: apicast
-    name: "${apiProductName}-${tenantName}-${envName}-prod-apicast"
-spec:
-    host: "${apiProductName}-${envName}-${productionWildcardDomain}"
-    port:
-        targetPort: proxy
-    tls:
-        termination: edge
-    to:
-        kind: Service
-        name: "apicast-${tenantName}-prod-apicast"
-        weight: 100
-    wildcardPolicy: None
-EOF
-    """
+    
+    try {
+        sh """ 
+            echo "Deleting the ${apiProductName}-${tenantName}-${envName}-prod-apicast OpenShift route in ${apicastNs} namespace ..."
+            oc delete route ${apiProductName}-${tenantName}-${envName}-prod-apicast -n ${apicastNs} 2> /dev/null
+        """
+    } catch (Exception e) {
+        echo "skip ${apiProductName}-${tenantName}-${envName}-prod-apicast route cleanup related exception, the resource may not exist." + e.getMessage();
+    }
+
+    try {
+        echo "Creating the ${apiProductName}-${tenantName}-${envName}-prod-apicast OpenShift route in ${apicastNs} namespace ..."
+        sh """ 
+            oc create route edge ${apiProductName}-${tenantName}-${envName}-prod-apicast \
+            --service=apicast-${tenantName}-prod-apicast \
+            --hostname=${apiProductName}-${envName}-${productionWildcardDomain} \
+            --port=proxy \
+            -n ${apicastNs} 2> /dev/null
+        """
+    } catch (Exception e) {
+        echo "skip ${apiProductName}-${tenantName}-${envName}-prod-apicast route creation related exception, the resource may already exist. " + e.getMessage();
+    }
+    
 }
 
 // Application plans from YAML files:

@@ -311,7 +311,7 @@ spec:
     name: apicast-${tenantName}-staging-apicast
     weight: 100
   wildcardPolicy: None
-  EOF
+EOF
     """
 }
 
@@ -339,7 +339,7 @@ spec:
     name: apicast-${tenantName}-prod-apicast
     weight: 100
   wildcardPolicy: None
-  EOF
+EOF
     """
 }
 

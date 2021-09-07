@@ -80,6 +80,19 @@
     -p DEVELOPER_ACCOUNT_ID=john
     ```
     ```zsh
+    oc new-app -f ./cicd-3scale/3scaletoolbox/camel-quarkus-xmlvalidation-api/pipeline-template.yaml  \
+    -p IMAGE_NAMESPACE=rh-dev \
+    -p DEV_PROJECT=rh-dev \
+    -p TEST_PROJECT=rh-test \
+    -p PROD_PROJECT=rh-prod \
+    -p PRIVATE_BASE_URL=<API_URL> \
+    -p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=<WILDCARD_DOMAIN> \
+    -p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.<WILDCARD_DOMAIN> \
+    -p TARGET_INSTANCE=<3SCALE_TOOLBOX_TENANT> \
+    -p OIDC_ISSUER_ENDPOINT=https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME> \
+    -p DEVELOPER_ACCOUNT_ID=john
+    ```
+    ```zsh
     oc new-app -f ./cicd-3scale/3scaletoolbox/camel-quarkus-rhoam-webhook-handler-api/pipeline-template.yaml  \
     -p IMAGE_NAMESPACE=rh-dev \
     -p DEV_PROJECT=rh-dev \

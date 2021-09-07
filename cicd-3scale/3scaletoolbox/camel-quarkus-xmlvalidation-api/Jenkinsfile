@@ -1,0 +1,355 @@
+#!groovy
+
+library identifier: '3scale-toolbox-jenkins@master',
+        retriever: modernSCM([$class: 'GitSCMSource',
+                              remote: 'https://github.com/rh-integration/3scale-toolbox-jenkins.git'])
+
+def service = null
+
+pipeline {
+    agent {
+        node {
+            label 'maven'
+        }
+    }
+
+    parameters{
+        string (defaultValue: 'image-registry.openshift-image-registry.svc:5000', name:'IMAGE_REGISTRY', description:'container image registry')
+        string (defaultValue: 'rh-dev', name:'IMAGE_NAMESPACE', description:'namespace where image is deployed')
+        string (defaultValue: 'rh-dev', name:'DEV_PROJECT', description:'build or development project')
+        string (defaultValue: 'rh-test', name:'TEST_PROJECT', description:'Test project')
+        string (defaultValue: 'rh-prod', name:'PROD_PROJECT', description:'Production project')
+        string (defaultValue: 'https://github.com/jeannyil-rhoam-resources/rhoam-automation.git', name:'GIT_REPO', description:'Git source')
+        string (defaultValue: 'main', name:'GIT_BRANCH', description:'Git branch in the source git')
+        booleanParam (defaultValue: false, name:'SELECT_DEPLOY_TO_PROD', description:'Approval to deploy to Production (default: no deployment to production)')
+    }
+
+    stages {
+    
+        stage('Checkout Source') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Create/Update APIcast OpenShift routes for Test') {
+            when {
+                expression {
+                    params.SELECT_DEPLOY_TO_PROD == false
+                }
+            }
+            steps {
+                script {
+
+                    def envName = params.TEST_PROJECT
+                    def apiProductName = 'camel-quarkus-xmlvalidation-apip'
+                    def apicastNs = params.SELF_MANAGED_APICAST_NS
+
+                    echo "Create/Update APIcast staging OpenShift route"
+                    createOrUpdateApicastSandboxRoute(apicastNs, apiProductName, envName)
+
+                    echo "Create/Update APIcast production OpenShift route"
+                    createOrUpdateApicastProductionRoute(apicastNs, apiProductName, envName)
+
+                }
+            }
+        }
+
+        stage('3scale Publish API to Test') {
+            when {
+                expression {
+                    params.SELECT_DEPLOY_TO_PROD == false
+                }
+            }
+            steps {
+                script {
+
+                    def envName = params.TEST_PROJECT
+                    def app_name= 'camel-quarkus-xmlvalidation-api'
+                    // Using the OpenShift service FQDN
+                    // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
+                    // Using the OpenShift route
+                    def backend_service = "http://" + app_name + "-" + envName + "." + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
+                    println "${backend_service} "
+
+                    echo "Prepare 3scale Configuration"
+                    service = toolbox.prepareThreescaleService(
+                            openapi: [filename: "./cicd-3scale/3scaletoolbox/camel-quarkus-xmlvalidation-api/rhoam-oas3.json"],
+                            environment: [baseSystemName                : params.API_BASE_SYSTEM_NAME,
+                                          privateBaseUrl                : backend_service,
+                                          environmentName               : envName,
+                                          oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-" + params.PUBLIC_STAGING_WILDCARD_DOMAIN,
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + "." + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
+                                        ],
+                            toolbox: [openshiftProject: params.DEV_PROJECT, 
+                                      destination: params.TARGET_INSTANCE,
+                                      image: params.TOOLBOX_IMAGE_REGISTRY,
+                                      activeDeadlineSeconds: 300,
+                                      insecure: params.DISABLE_TLS_VALIDATION == "yes",
+                                      secretName: params.SECRET_NAME],
+                            service: [:],
+                            applicationPlans: [
+                                    [ artefactFile: params.BASIC_PLAN_YAML_FILE_PATH ],
+                                    [ artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH ]
+                            ],
+                            applications: [
+                                    [name: envName, description: "This is used for Test environment integration testing", plan: "xml-validation-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
+                            ]
+                    )
+
+                    echo "toolbox version = " + service.toolbox.getToolboxVersion()
+
+                    echo "Import OpenAPI"
+                    service.importOpenAPI()
+                    echo "Service with system_name ${service.environment.targetSystemName} created !"
+
+                    echo "Create an Application Plan"
+                    service.applyApplicationPlans()
+
+                    echo "Create an Application"
+                    service.applyApplication()
+
+                    // TODO: fix integration test
+                    // echo "Run integration tests"
+                    // runIntegrationTests(service)
+
+                    echo "Promote to production"
+                    service.promoteToProduction()
+
+                }
+            }
+        }
+
+        stage('Wait for user to select module to push to production.') {
+            when {
+                expression {
+                    params.SELECT_DEPLOY_TO_PROD == true
+                }
+            }
+            steps {
+                script {
+                    try {
+                        timeout (time:2, unit:'HOURS') {
+                            env.userProdApproval = input(id: 'userInput', message: "Do you approve this build to promote to production?")
+                            env.userProdApproval = 'Approved'
+                        }
+                    } catch (exception) {
+                        env.userProdApproval='---'
+                    }
+                    println("User approval to production " + env.userProdApproval);
+                }
+            }
+        }
+
+        stage('Create/Update APIcast OpenShift routes for Production') {
+            when {
+                expression {
+                    env.userProdApproval == 'Approved'
+                }
+            }
+            steps {
+                script {
+
+                    def envName = params.PROD_PROJECT
+                    def apiProductName = 'camel-quarkus-xmlvalidation-apip'
+                    def apicastNs = params.SELF_MANAGED_APICAST_NS
+
+                    echo "Create/Update APIcast staging OpenShift route"
+                    createOrUpdateApicastSandboxRoute(apicastNs, apiProductName, envName)
+
+                    echo "Create/Update APIcast production OpenShift route"
+                    createOrUpdateApicastProductionRoute(apicastNs, apiProductName, envName)
+
+                }
+            }
+        }
+
+        stage('3scale Publish API to Production') {
+            when {
+                expression {
+                    env.userProdApproval == 'Approved'
+                }
+            }
+            steps {
+                script {
+
+                    def envName = params.PROD_PROJECT
+                    def app_name= 'camel-quarkus-xmlvalidation-api'
+                    // Using the OpenShift service FQDN
+                    // def backend_service = "http://" + app_name + "." + envName + ".svc:8080"
+                    // Using the OpenShift route
+                    def backend_service = "http://" + app_name + "-" + envName + "." + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
+                    println "${backend_service} "
+
+                    echo "Prepare 3scale Configuration"
+                    service = toolbox.prepareThreescaleService(
+                            openapi: [filename: "./cicd-3scale/3scaletoolbox/camel-quarkus-xmlvalidation-api/rhoam-oas3.json"],
+                            environment: [baseSystemName                : params.API_BASE_SYSTEM_NAME,
+                                          privateBaseUrl                : backend_service,
+                                          environmentName               : envName,
+                                          oidcIssuerEndpoint            : params.OIDC_ISSUER_ENDPOINT,
+                                          stagingPublicBaseURL          : "https://" + app_name + "p-" + envName + "-" + params.PUBLIC_STAGING_WILDCARD_DOMAIN,
+                                          productionPublicBaseURL       : "https://" + app_name + "p-" + envName + "." + params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
+                                        ],
+                            toolbox: [openshiftProject: params.DEV_PROJECT, 
+                                      destination: params.TARGET_INSTANCE,
+                                      image: params.TOOLBOX_IMAGE_REGISTRY,
+                                      activeDeadlineSeconds: 300,
+                                      insecure: params.DISABLE_TLS_VALIDATION == "yes",
+                                      secretName: params.SECRET_NAME],
+                            service: [:],
+                            applicationPlans: [
+                                    [ artefactFile: params.BASIC_PLAN_YAML_FILE_PATH ],
+                                    [ artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH ]
+                            ],
+                            applications: [
+                                    [name:envName, description: "This is used for Production environment integration testing", plan: "xml-validation-api_basic_plan", account: params.DEVELOPER_ACCOUNT_ID]
+                            ]
+                    )
+
+                    echo "toolbox version = " + service.toolbox.getToolboxVersion()
+
+                    echo "Import OpenAPI"
+                    service.importOpenAPI()
+                    echo "Service with system_name ${service.environment.targetSystemName} created !"
+
+                    echo "Create an Application Plan"
+                    service.applyApplicationPlans()
+
+                    echo "Create an Application"
+                    service.applyApplication()
+
+                    // TODO: fix integration test
+                    // echo "Run integration tests"
+                    // runIntegrationTests(service)
+                    
+                    echo "Promote to production"
+                    service.promoteToProduction()
+
+                }
+            }
+        }
+    }
+}
+
+def runIntegrationTests(def service) {
+    // To run the integration tests when using APIcast SaaS instances, we need
+    // to fetch the proxy definition to extract the staging public url
+    def proxy = service.readProxy("sandbox")
+
+    // The integration tests will be a bit different depending on the security scheme
+    // declared in the OpenAPI Specification file
+    def getCredentialsCodeSnippet = null
+    if (service.openapi.securityScheme.name() == "OPEN") {
+        getCredentialsCodeSnippet = """
+            credential_header="x-dummy: dummy"
+            echo "no credential will be used"
+        """
+    } else if (service.openapi.securityScheme.name() == "APIKEY") {
+        def userkey = service.applications[0].userkey
+        getCredentialsCodeSnippet = """
+            credential_header="api-key: ${userkey}"
+            echo "userkey is ${userkey}"
+        """
+    } else if (service.openapi.securityScheme.name() == "OIDC") {
+        def tokenEndpoint = getTokenEndpoint(params.OIDC_ISSUER_ENDPOINT)
+        def clientId = service.applications[0].clientId
+        def clientSecret = service.applications[0].clientSecret
+        getCredentialsCodeSnippet = """
+            echo "token endpoint is ${tokenEndpoint}"
+            echo "client_id=${clientId}"
+            echo "client_secret=${clientSecret}"
+            curl -sfk "${tokenEndpoint}" -d client_id="${clientId}" -d client_secret="${clientSecret}" -d scope=openid -d grant_type=client_credentials -o response.json
+            curl -sLfk https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -o /tmp/jq
+            chmod 755 /tmp/jq
+            TOKEN="\$(/tmp/jq -r .access_token response.json)"
+            echo "Received access_token '\$TOKEN'"
+            credential_header="Authorization: Bearer \$TOKEN"
+        """
+    }
+
+    // Run the actual tests
+    def postdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><p:membership xmlns:p=\"http://www.github.com/jeanNyil/schemas/membership/v1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><p:requestType>API</p:requestType><p:requestID>5948</p:requestID><p:memberID>85623617</p:memberID><p:status>A</p:status><p:enrolmentDate>2020-09-05</p:enrolmentDate><p:changedBy>JaLiLa</p:changedBy><p:forcedLevelCode>69</p:forcedLevelCode><p:vipOnInvitation>Y</p:vipOnInvitation><p:startDate>2020-09-05</p:startDate><p:endDate>2100-09-05</p:endDate></p:membership>'
+    retry(5) {
+        sh """
+            set -e
+            echo "Public Staging Base URL is ${proxy.sandbox_endpoint}"
+            ${getCredentialsCodeSnippet}
+            curl -sfk -w "POST /validateMembershipXML: %{http_code}\n" -o /dev/null -X POST -H "Content-Type: application/xml" -H "\$credential_header" -d "${postdata}" "${proxy.sandbox_endpoint}/validateMembershipXML"
+        """
+    }
+
+}
+
+def getTokenEndpoint(String oidcIssuerEndpoint) {
+    def m = (oidcIssuerEndpoint =~ /(https?:\/\/)[^:]+:[^@]+@(.*)/)
+    return "${m[0][1]}${m[0][2]}/protocol/openid-connect/token"
+}
+
+def createOrUpdateApicastSandboxRoute(String apicastNs, String apiProductName, String envName) {
+    def tenantName = params.TARGET_INSTANCE
+    def stagingWildcardDomain = params.PUBLIC_STAGING_WILDCARD_DOMAIN
+    sh """
+        set -e
+        oc -n ${apicastNs} replace --force -f - <<EOF
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: apicast
+    threescale_component: apicast
+  name: ${apiProductName}-${tenantName}-${envName}-stage-apicast
+spec:
+  host: ${apiProductName}-${envName}-${stagingWildcardDomain}
+  port:
+    targetPort: proxy
+  tls:
+    termination: edge
+  to:
+    kind: Service
+    name: apicast-${tenantName}-staging-apicast
+    weight: 100
+  wildcardPolicy: None
+  EOF
+    """
+}
+
+def createOrUpdateApicastProductionRoute(String apicastNs, String apiProductName, String envName) {
+    def tenantName = params.TARGET_INSTANCE
+    def productionWildcardDomain = params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
+    sh """
+        set -e
+        oc -n ${apicastNs} replace --force -f - <<EOF
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: apicast
+    threescale_component: apicast
+  name: ${apiProductName}-${tenantName}-${envName}-prod-apicast
+spec:
+  host: ${apiProductName}-${envName}-${productionWildcardDomain}
+  port:
+    targetPort: proxy
+  tls:
+    termination: edge
+  to:
+    kind: Service
+    name: apicast-${tenantName}-prod-apicast
+    weight: 100
+  wildcardPolicy: None
+  EOF
+    """
+}
+
+// Application plans from YAML files:
+// [ artefactFile: params.BASIC_PLAN_YAML_FILE_PATH ],
+// [ artefactFile: params.UNLIMITED_PLAN_YAML_FILE_PATH ]
+
+// Application plans from inline:
+// [ systemName: "xml-validation-api_basic_plan", name: "Basic", defaultPlan: true, published: true ],
+// [ systemName: "xml-validation-api_unlimited_plan", name: "Unlimited", published: true ]
+
+// Threescale Jenkins library conf
+// privateBasePath               : "/",

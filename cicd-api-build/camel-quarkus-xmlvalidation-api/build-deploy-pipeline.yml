@@ -1,0 +1,63 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+    template: pipeline
+metadata:
+  annotations:
+    description: Camel-Quarkus-XmlValidation-Api CICD Deployment Pipeline
+  name: camel-quarkus-xmlvalidation-api-build-deploy-pipeline
+parameters:
+- name: GIT_REPO
+  value: https://github.com/jeanNyil/rh-build-quarkus-camel-demos.git
+  required: true
+- name: GIT_BRANCH
+  value: master
+  required: true
+- name: DEV_PROJECT
+  required: true
+- name: TEST_PROJECT
+  required: true
+- name: PROD_PROJECT
+  required: true
+- name: IMAGE_REGISTRY
+  value: image-registry.openshift-image-registry.svc:5000
+  required: true
+- name: IMAGE_NAMESPACE
+  required: true
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: camel-quarkus-xmlvalidation-api-build-deploy-pipeline
+    labels:
+      app: "camel-quarkus-xmlvalidation-api-cicd-pipeline"
+  spec:
+    output: null
+    postCommit: null
+    resources: null
+    runPolicy: Serial
+    source:
+      type: None
+    source:
+      git:
+        uri: ${GIT_REPO}
+        ref: ${GIT_BRANCH}
+    strategy:
+      type: JenkinsPipeline
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: camel-quarkus-xmlvalidation-api/Jenkinsfile
+        env:
+        - name: GIT_BRANCH
+          value: ${GIT_BRANCH}
+        - name: GIT_REPO
+          value: ${GIT_REPO}
+        - name: DEV_PROJECT 
+          value: ${DEV_PROJECT}
+        - name: TEST_PROJECT 
+          value: ${TEST_PROJECT}
+        - name: PROD_PROJECT 
+          value: ${PROD_PROJECT}
+        - name: IMAGE_NAMESPACE 
+          value: ${IMAGE_NAMESPACE}
+        - name: IMAGE_REGISTRY 
+          value: ${IMAGE_REGISTRY}

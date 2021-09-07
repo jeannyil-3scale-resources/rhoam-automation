@@ -292,7 +292,7 @@ def createOrUpdateApicastSandboxRoute(String apicastNs, String apiProductName, S
     def stagingWildcardDomain = params.PUBLIC_STAGING_WILDCARD_DOMAIN
     sh """
         set -e
-        oc -n ${apicastNs} replace --force -f - <<EOF
+        oc --loglevel=5 -n ${apicastNs} replace --force -f - <<EOF
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -301,7 +301,7 @@ metadata:
         threescale_component: apicast
     name: "${apiProductName}-${tenantName}-${envName}-stage-apicast"
 spec:
-    host: "${apiProductName}-${envName}-${productionWildcardDomain}"
+    host: "${apiProductName}-${envName}-${stagingWildcardDomain}"
     port:
         targetPort: proxy
     tls:
@@ -320,7 +320,7 @@ def createOrUpdateApicastProductionRoute(String apicastNs, String apiProductName
     def productionWildcardDomain = params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
     sh """
         set -e
-        oc -n ${apicastNs} replace --force -f - <<EOF
+        oc --loglevel=5 -n ${apicastNs} replace --force -f - <<EOF
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:

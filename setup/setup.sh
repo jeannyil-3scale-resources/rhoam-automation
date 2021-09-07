@@ -117,6 +117,7 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-xmlvalidation-api/pipeline
 -p TEST_PROJECT=$TEST_PROJECT \
 -p PROD_PROJECT=$PROD_PROJECT \
 -p TARGET_INSTANCE="rhpds-3scale-tenant" \
+-p SELF_MANAGED_APICAST_NS=$SELF_MANAGED_APICAST_NS \
 -p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox430.opentlc.com \
 -p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox430.opentlc.com \
 -p OIDC_ISSUER_ENDPOINT="https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME>" \

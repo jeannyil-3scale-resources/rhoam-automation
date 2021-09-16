@@ -81,8 +81,8 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-fruits-and-legumes-api/pip
 -p TEST_PROJECT=$TEST_PROJECT \
 -p PROD_PROJECT=$PROD_PROJECT \
 -p TARGET_INSTANCE="rhpds-3scale-tenant" \
--p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox430.opentlc.com \
--p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox430.opentlc.com \
+-p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox706.opentlc.com \
+-p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox706.opentlc.com \
 -p OIDC_ISSUER_ENDPOINT="https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME>" \
 -p DEVELOPER_ACCOUNT_ID="john" \
 -p BASIC_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-fruits-and-legumes-api/basic-plan.yaml" \
@@ -99,8 +99,8 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/pipelin
 -p TEST_PROJECT=$TEST_PROJECT \
 -p PROD_PROJECT=$PROD_PROJECT \
 -p TARGET_INSTANCE="rhpds-3scale-tenant" \
--p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox430.opentlc.com \
--p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox430.opentlc.com \
+-p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox706.opentlc.com \
+-p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox706.opentlc.com \
 -p OIDC_ISSUER_ENDPOINT="https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME>" \
 -p DEVELOPER_ACCOUNT_ID="john" \
 -p BASIC_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-jsonvalidation-api/basic-plan.yaml" \
@@ -118,8 +118,8 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-xmlvalidation-api/pipeline
 -p PROD_PROJECT=$PROD_PROJECT \
 -p TARGET_INSTANCE="rhpds-3scale-tenant" \
 -p SELF_MANAGED_APICAST_NS=$SELF_MANAGED_APICAST_NS \
--p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox430.opentlc.com \
--p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox430.opentlc.com \
+-p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox706.opentlc.com \
+-p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox706.opentlc.com \
 -p OIDC_ISSUER_ENDPOINT="https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME>" \
 -p DEVELOPER_ACCOUNT_ID="john" \
 -p BASIC_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-xmlvalidation-api/basic-plan.yaml" \
@@ -136,8 +136,8 @@ oc new-app -f cicd-3scale/3scaletoolbox/camel-quarkus-rhoam-webhook-handler-api/
 -p TEST_PROJECT=$TEST_PROJECT \
 -p PROD_PROJECT=$PROD_PROJECT \
 -p TARGET_INSTANCE="rhpds-3scale-tenant" \
--p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox430.opentlc.com \
--p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox430.opentlc.com \
+-p PUBLIC_PRODUCTION_WILDCARD_DOMAIN=apps.jeannyil.sandbox706.opentlc.com \
+-p PUBLIC_STAGING_WILDCARD_DOMAIN=staging.apps.jeannyil.sandbox706.opentlc.com \
 -p OIDC_ISSUER_ENDPOINT="https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME>" \
 -p DEVELOPER_ACCOUNT_ID="john" \
 -p BASIC_PLAN_YAML_FILE_PATH="https://raw.githubusercontent.com/jeannyil-rhoam-resources/rhoam-automation/main/cicd-3scale/3scaletoolbox/camel-quarkus-rhoam-webhook-handler-api/basic-plan.yaml" \

@@ -1,7 +1,7 @@
 # Import 3scale toolbox CLI:
 # 3scale policies import \
 # --file='./policy-chain.yaml' \
-# --verbose rhpds-3scale-tenant rh-test_camel-quarkus-fruits-and-legumes-api_1
+# --verbose apim-demo rh-test_camel-quarkus-fruits-and-legumes-api_1
 ---
 - name: logging
   version: builtin

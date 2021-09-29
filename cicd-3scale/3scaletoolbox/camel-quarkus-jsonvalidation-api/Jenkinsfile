@@ -90,13 +90,13 @@ pipeline {
                     // TODO : create OpenShift routes for the service
                     // oc create route edge camel-quarkus-jsonvalidation-apip-rhpds-3scale-tenant-rh-test-stage-apicast \
                     // --service=apicast-rhpds-3scale-tenant-staging-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox706.opentlc.com \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test-staging.apps.jeannyil.sandbox500.opentlc.com \
                     // --port=proxy \
                     // -n 3scale-gw
 
                     // oc create route edge camel-quarkus-jsonvalidation-apip-rhpds-3scale-tenant-rh-test-prod-apicast \ 
                     // --service=apicast-3scale-tenant-prod-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox706.opentlc.com \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-test.apps.jeannyil.sandbox500.opentlc.com \
                     // --port=proxy \
                     // -n 3scale-gw
 
@@ -190,13 +190,13 @@ pipeline {
                     // TODO : create OpenShift routes for the service
                     // oc create route edge camel-quarkus-jsonvalidation-apip-rhpds-3scale-tenant-rh-prod-stage-apicast \
                     // --service=apicast-rhpds-3scale-tenant-staging-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-prod-staging.apps.jeannyil.sandbox706.opentlc.com \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-prod-staging.apps.jeannyil.sandbox500.opentlc.com \
                     // --port=proxy \
                     // -n 3scale-gw
 
                     // oc create route edge camel-quarkus-jsonvalidation-apip-rhpds-3scale-tenant-rh-prod-prod-apicast \ 
                     // --service=apicast-3scale-tenant-prod-apicast \
-                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-prod.apps.jeannyil.sandbox706.opentlc.com \
+                    // --hostname=camel-quarkus-jsonvalidation-apip-rh-prod.apps.jeannyil.sandbox500.opentlc.com \
                     // --port=proxy \
                     // -n 3scale-gw
 

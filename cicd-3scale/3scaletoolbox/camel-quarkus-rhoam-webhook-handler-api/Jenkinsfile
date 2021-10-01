@@ -42,7 +42,7 @@ pipeline {
                 script {
 
                     def envName = params.TEST_PROJECT
-                    def apiProductName = 'camel-quarkus-xmlvalidation-apip'
+                    def apiProductName = 'camel-quarkus-rhoam-webhook-handler-apip'
                     def apicastNs = params.SELF_MANAGED_APICAST_NS
 
                     echo "Create/Update APIcast staging OpenShift route"
@@ -151,7 +151,7 @@ pipeline {
                 script {
 
                     def envName = params.PROD_PROJECT
-                    def apiProductName = 'camel-quarkus-xmlvalidation-apip'
+                    def apiProductName = 'camel-quarkus-rhoam-webhook-handler-apip'
                     def apicastNs = params.SELF_MANAGED_APICAST_NS
 
                     echo "Create/Update APIcast staging OpenShift route"

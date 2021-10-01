@@ -32,6 +32,29 @@ pipeline {
             }
         }
 
+        stage('Create/Update APIcast OpenShift routes for Test') {
+            when {
+                expression {
+                    params.SELECT_DEPLOY_TO_PROD == false
+                }
+            }
+            steps {
+                script {
+
+                    def envName = params.TEST_PROJECT
+                    def apiProductName = 'camel-quarkus-xmlvalidation-apip'
+                    def apicastNs = params.SELF_MANAGED_APICAST_NS
+
+                    echo "Create/Update APIcast staging OpenShift route"
+                    createOrUpdateApicastSandboxRoute(apicastNs, apiProductName, envName)
+
+                    echo "Create/Update APIcast production OpenShift route"
+                    createOrUpdateApicastProductionRoute(apicastNs, apiProductName, envName)
+
+                }
+            }
+        }
+
         stage('3scale Publish API to Test') {
             when {
                 expression {
@@ -87,19 +110,6 @@ pipeline {
                     echo "Create an Application"
                     service.applyApplication()
 
-                    // TODO : create OpenShift routes for the service
-                    // oc create route edge camel-quarkus-rhoam-webhook-handler-api-3scale-tenant-stage-apicast \
-                    // --service=apicast-3scale-tenant-staging-apicast \
-                    // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test-staging.apps.jeannyil.sandbox500.opentlc.com \
-                    // --port=proxy \
-                    // -n 3scale-gw
-
-                    // oc create route edge camel-quarkus-rhoam-webhook-handler-api-3scale-tenant-prod-apicast \ 
-                    // --service=apicast-3scale-tenant-prod-apicast \
-                    // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test.apps.jeannyil.sandbox500.opentlc.com \
-                    // --port=proxy \
-                    // -n 3scale-gw
-
                     echo "Run integration tests"
                     runIntegrationTests(service)
 
@@ -127,6 +137,29 @@ pipeline {
                         env.userProdApproval='---'
                     }
                     println("User approval to production " + env.userProdApproval);
+                }
+            }
+        }
+
+        stage('Create/Update APIcast OpenShift routes for Production') {
+            when {
+                expression {
+                    env.userProdApproval == 'Approved'
+                }
+            }
+            steps {
+                script {
+
+                    def envName = params.PROD_PROJECT
+                    def apiProductName = 'camel-quarkus-xmlvalidation-apip'
+                    def apicastNs = params.SELF_MANAGED_APICAST_NS
+
+                    echo "Create/Update APIcast staging OpenShift route"
+                    createOrUpdateApicastSandboxRoute(apicastNs, apiProductName, envName)
+
+                    echo "Create/Update APIcast production OpenShift route"
+                    createOrUpdateApicastProductionRoute(apicastNs, apiProductName, envName)
+
                 }
             }
         }
@@ -185,19 +218,6 @@ pipeline {
 
                     echo "Create an Application"
                     service.applyApplication()
-
-                    // TODO : create OpenShift routes for the service
-                    // oc create route edge camel-quarkus-rhoam-webhook-handler-apip-rhpds-3scale-tenant-rh-test-stage-apicast \
-                    // --service=apicast-rhpds-3scale-tenant-staging-apicast \
-                    // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test-staging.apps.jeannyil.sandbox500.opentlc.com \
-                    // --port=proxy \
-                    // -n 3scale-gw
-
-                    // oc create route edge camel-quarkus-rhoam-webhook-handler-apip-rhpds-3scale-tenant-rh-test-prod-apicast \
-                    // --service=apicast-rhpds-3scale-tenant-prod-apicast \
-                    // --hostname=camel-quarkus-rhoam-webhook-handler-apip-rh-test.apps.jeannyil.sandbox500.opentlc.com \
-                    // --port=proxy \
-                    // -n 3scale-gw
 
                     echo "Run integration tests"
                     runIntegrationTests(service)
@@ -262,6 +282,62 @@ def runIntegrationTests(def service) {
 def getTokenEndpoint(String oidcIssuerEndpoint) {
     def m = (oidcIssuerEndpoint =~ /(https?:\/\/)[^:]+:[^@]+@(.*)/)
     return "${m[0][1]}${m[0][2]}/protocol/openid-connect/token"
+}
+
+def createOrUpdateApicastSandboxRoute(String apicastNs, String apiProductName, String envName) {
+    def tenantName = params.TARGET_INSTANCE
+    def stagingWildcardDomain = params.PUBLIC_STAGING_WILDCARD_DOMAIN
+    
+    try {
+        sh """ 
+            echo "Deleting the ${apiProductName}-${tenantName}-${envName}-stage-apicast OpenShift route in ${apicastNs} namespace ..."
+            oc delete route ${apiProductName}-${tenantName}-${envName}-stage-apicast -n ${apicastNs} 2> /dev/null
+        """
+    } catch (Exception e) {
+        echo "skip ${apiProductName}-${tenantName}-${envName}-stage-apicast route cleanup related exception, the resource may not exist." + e.getMessage();
+    }
+
+    try {
+        echo "Creating the ${apiProductName}-${tenantName}-${envName}-stage-apicast OpenShift route in ${apicastNs} namespace ..."
+        sh """ 
+            oc create route edge ${apiProductName}-${tenantName}-${envName}-stage-apicast \
+            --service=apicast-${tenantName}-staging-apicast \
+            --hostname=${apiProductName}-${envName}-${stagingWildcardDomain} \
+            --port=proxy \
+            -n ${apicastNs} 2> /dev/null
+        """
+    } catch (Exception e) {
+        echo "skip ${apiProductName}-${tenantName}-${envName}-stage-apicast route creation related exception, the resource may already exist. " + e.getMessage();
+    }
+
+}
+
+def createOrUpdateApicastProductionRoute(String apicastNs, String apiProductName, String envName) {
+    def tenantName = params.TARGET_INSTANCE
+    def productionWildcardDomain = params.PUBLIC_PRODUCTION_WILDCARD_DOMAIN
+    
+    try {
+        sh """ 
+            echo "Deleting the ${apiProductName}-${tenantName}-${envName}-prod-apicast OpenShift route in ${apicastNs} namespace ..."
+            oc delete route ${apiProductName}-${tenantName}-${envName}-prod-apicast -n ${apicastNs} 2> /dev/null
+        """
+    } catch (Exception e) {
+        echo "skip ${apiProductName}-${tenantName}-${envName}-prod-apicast route cleanup related exception, the resource may not exist." + e.getMessage();
+    }
+
+    try {
+        echo "Creating the ${apiProductName}-${tenantName}-${envName}-prod-apicast OpenShift route in ${apicastNs} namespace ..."
+        sh """ 
+            oc create route edge ${apiProductName}-${tenantName}-${envName}-prod-apicast \
+            --service=apicast-${tenantName}-prod-apicast \
+            --hostname=${apiProductName}-${envName}-${productionWildcardDomain} \
+            --port=proxy \
+            -n ${apicastNs} 2> /dev/null
+        """
+    } catch (Exception e) {
+        echo "skip ${apiProductName}-${tenantName}-${envName}-prod-apicast route creation related exception, the resource may already exist. " + e.getMessage();
+    }
+    
 }
 
 // Application plans from YAML files:

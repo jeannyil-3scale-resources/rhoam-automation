@@ -57,6 +57,8 @@ objects:
           value: ${SECRET_NAME}
         - name: TARGET_INSTANCE
           value: ${TARGET_INSTANCE}
+        - name: SELF_MANAGED_APICAST_NS
+          value: ${SELF_MANAGED_APICAST_NS}
         - name: OIDC_ISSUER_ENDPOINT
           value: ${OIDC_ISSUER_ENDPOINT}
         - name: DEVELOPER_ACCOUNT_ID
@@ -105,6 +107,9 @@ parameters:
   required: true  
 - name: TARGET_INSTANCE
   value: apim-demo
+  required: true
+- name: SELF_MANAGED_APICAST_NS
+  value: 3scale-gw
   required: true
 - name: OIDC_ISSUER_ENDPOINT
   value: https://<CLIENT_ID>:<CLIENT_SECRET>@<HOST>:<PORT>/auth/realms/<REALM_NAME>
